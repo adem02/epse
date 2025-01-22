@@ -1,0 +1,23 @@
+{
+  "name": "{{.ProjectName}}",
+  "version": "1.0.0",
+  "description": "Generated project",
+  "main": "build/src/index.js",
+  "_moduleAliases": {
+    "@": "build/src"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node -r module-alias/register build/src/index.js",
+    "dev": "ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
+    "lint:check": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "prettier:check": "prettier src --check",
+    "prettier:fix": "prettier src --write",
+    "qa": "npm run lint:fix && npm run prettier:fix",
+    "ta": "npm run unit && npm run integration && npm run e2e",
+    "qa-ta": "npm run qa && npm run ta"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,11 @@
+import { HealthInterface } from '../../entities/Health';
+
+export class HealthService {
+  async health(): Promise<HealthInterface> {
+    return {
+      status: 'up',
+      dbStatus: 'off',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}

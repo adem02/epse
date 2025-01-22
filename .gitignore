@@ -1,0 +1,45 @@
+.idea
+
+# Binaires compilés
+/bin/
+/*.exe
+/*.exe~
+/*.dll
+/*.so
+/*.dylib
+/*.test
+*.out
+
+# Cache et fichiers temporaires
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.DS_Store
+
+
+# Dossier de build local
+/build/
+dist/
+
+# Fichiers générés par l'éditeur (IntelliJ, VSCode, etc.)
+.idea/
+.vscode/
+*.iml
+
+# Fichiers de test générés
+*.coverprofile
+*.test
+testdata/
+
+# Clés ou configurations sensibles
+.env.local
+.env.production
+config.json
+*.key
+*.crt
+
+# Autres fichiers spécifiques
+exemple.md
+epse

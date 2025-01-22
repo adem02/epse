@@ -1,0 +1,18 @@
+import { Router } from 'express';
+
+// Importez vos modules de routes ici
+// Exemple : import productRoutes from './product.routes';
+
+const router = Router();
+
+// Ajoutez vos modules de routes ici
+// Exemple : router.use("/users", userRoutes);
+
+router.get('/info', (_, res) => {
+  res.status(200).json({
+    status: 'UP',
+    name: '{{.ProjectName}}',
+  });
+});
+
+export default router;

@@ -1,0 +1,28 @@
+import { inject, injectable } from 'tsyringe';
+import { Controller, Get, Route, SuccessResponse } from 'tsoa';
+import { HealthService } from '../../services/Health.service';
+import { LoggerInterfaceToken } from '../../../utilities/di.constants';
+import { LoggerInterface } from '../../../entities/logger/Logger.interface';
+import { HealthOutputDto } from './Health.dto';
+
+@Route('health')
+@injectable()
+export class HealthController extends Controller {
+
+  constructor(
+    private readonly healthService: HealthService,
+    @inject(LoggerInterfaceToken) private readonly logger: LoggerInterface,
+  ) {
+    super();
+  }
+
+  @Get('')
+  @SuccessResponse('200')
+  public async health(): Promise<HealthOutputDto> {
+    this.logger.info('Health check');
+
+    const health = await this.healthService.health();
+
+    return new HealthOutputDto(health);
+  }
+}

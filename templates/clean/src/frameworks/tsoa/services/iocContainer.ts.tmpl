@@ -1,0 +1,20 @@
+import { container } from 'tsyringe';
+import { IocContainer, ServiceIdentifier } from 'tsoa';
+import AppServices from './services';
+
+AppServices.forEach((service) => {
+  if (service.class) {
+    container.register(service.token, { useClass: service.class });
+    return;
+  }
+  if (service.value) {
+    container.register(service.token, { useValue: service.value });
+    return;
+  }
+});
+
+export const iocContainer: IocContainer = {
+  get: <T>(controller: ServiceIdentifier<T>): T => {
+    return container.resolve<T>(controller as never);
+  },
+};

@@ -1,0 +1,24 @@
+# {{.ProjectName}}
+
+## Description
+Ce projet a été généré avec EPSE en utilisant la structure CLEAN. Il s'agit d'une architecture modulaire basée sur les principes de Clean Architecture.
+
+## Structure
+- src/adapters : Gestion des contrôleurs, middlewares, et accès aux services.
+- src/entities : Définitions des entités métier et gestion des erreurs.
+- src/frameworks : Configuration et outils nécessaires pour l’application.
+- src/test : Tests unitaires et d’intégration.
+
+## Commandes
+Après avoir généré la structure, installez les dépendances nécessaires :
+
+### Avec npm :
+npm install express tsoa
+npm install --save-dev typescript ts-node-dev @types/node @types/express jest ts-jest
+
+### Avec yarn :
+yarn add express tsoa
+yarn add --dev typescript ts-node-dev @types/node @types/express jest ts-jest
+
+### Démarrer le projet :
+npm run start

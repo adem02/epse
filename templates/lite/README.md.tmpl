@@ -1,0 +1,82 @@
+# **EPSE - Outil de génération de structure de projet**
+
+EPSE est un outil CLI conçu pour générer rapidement des structures de projet basées sur **Node.js**, **Express**, et **TypeScript**.
+
+---
+
+## **Commandes principales**
+
+### **Générer un projet minimaliste (LITE)**
+- Crée une structure de projet simple et légère adaptée aux petites API ou prototypes.
+
+```bash
+epse generate <project-name> --lite [destination]
+```
+
+### **Générer un projet avancé (CLEAN)**
+- Crée une structure de projet complète basée sur les principes de Clean Architecture.
+
+```bash
+epse generate <project-name> --clean [destination]
+```
+
+### **Utilisation interactive**
+- Lance une session interactive pour vous guider dans la création de votre projet.
+
+```bash
+epse generate
+```
+
+---
+
+## **Exemples d’utilisation**
+
+### **1. Génération d’un projet LITE :**
+```bash
+epse generate my-lite-project --lite
+```
+
+### **2. Génération d’un projet CLEAN :**
+```bash
+epse generate my-clean-project --clean
+```
+
+### **3. Utilisation interactive :**
+```bash
+epse generate
+```
+
+---
+
+## **Prérequis**
+
+- **Node.js** version 18 ou supérieure.
+- Un gestionnaire de paquets comme **npm** ou **yarn** installé.
+
+---
+
+## **Installation des dépendances**
+
+Après la génération du projet, installez les dépendances nécessaires en suivant les instructions affichées dans le terminal ou présentes dans le `README.md` généré.
+
+Exemple pour un projet LITE avec npm :
+```bash
+npm install express
+npm install --save-dev typescript ts-node-dev @types/node @types/express
+```
+
+---
+
+## **Points forts**
+
+- **Rapide :** Créez votre structure de projet en quelques secondes.
+- **Flexible :** Choisissez entre des templates LITE ou CLEAN.
+- **Personnalisable :** Modifiez les templates ou ajoutez vos propres modules.
+
+---
+
+## **Licence**
+
+Ce projet est sous licence [MIT](LICENSE). Vous êtes libre de l'utiliser, de le modifier et de le partager.
+
+---

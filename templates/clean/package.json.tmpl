@@ -1,0 +1,23 @@
+{
+  "name": "{{.ProjectName}}",
+  "version": "1.0.0",
+  "description": "Generated CLEAN project",
+  "main": "src/server.ts",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "swagger": "tsoa spec-and-routes",
+    "start": "node build/src/server.js",
+    "dev": "npm run swagger && ts-node-dev --respawn src/server.ts",
+    "test": "jest",
+    "build": "tsoa spec-and-routes && tsc",
+    "clean": "rimraf build",
+    "lint:check": "eslint src && eslint test",
+    "lint:fix": "eslint src --fix && eslint test --fix",
+    "prettier:check": "prettier src --check && prettier test --check",
+    "prettier:fix": "prettier src --write && prettier test --write",
+    "qa": "npm run lint:fix && npm run prettier:fix",
+    "ta": "npm run unit && npm run integration && npm run e2e",
+    "qa-ta": "npm run qa && npm run ta"
+  }
+}

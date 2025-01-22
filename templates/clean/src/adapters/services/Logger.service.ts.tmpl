@@ -1,0 +1,33 @@
+import Logger from '../../frameworks/logger.config';
+import { LoggerInterface } from '../../entities/logger/Logger.interface';
+
+export class LoggerService implements LoggerInterface {
+  error(message: string, context: any = {}): void {
+    if (Array.isArray(context)) {
+      context = { ...context };
+    }
+
+    Logger.error(context, message);
+  }
+  warn(message: string, context: any = {}): void {
+    if (Array.isArray(context)) {
+      context = { ...context };
+    }
+
+    Logger.warn(context, message);
+  }
+  info(message: string, context: any = {}): void {
+    if (Array.isArray(context)) {
+      context = { ...context };
+    }
+
+    Logger.info(context, message);
+  }
+  debug(message: string, context: any = {}): void {
+    if (Array.isArray(context)) {
+      context = { ...context };
+    }
+
+    Logger.debug(context, message);
+  }
+}

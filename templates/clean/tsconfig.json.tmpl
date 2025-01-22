@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "incremental": true, // Active la compilation incrémentale pour accélérer les builds
+    "target": "ES2022", // Support des dernières fonctionnalités ES compatibles avec Node.js 18+
+    "module": "commonjs", // Spécifique à Node.js
+    "rootDir": "src", // Définit le répertoire racine pour les fichiers source
+    "outDir": "build", // Répertoire de sortie pour les fichiers compilés
+    "baseUrl": "src", // Définit la racine pour les imports relatifs
+    "strict": true, // Active toutes les vérifications strictes pour un typage sécurisé
+    "noImplicitAny": true, // Erreur si un type implicite `any` est utilisé
+    "strictNullChecks": true, // Prend en compte `null` et `undefined`
+    "strictBindCallApply": true, // Vérifie les arguments des méthodes bind/call/apply
+    "strictFunctionTypes": true, // Vérifie la compatibilité des types dans les fonctions
+    "strictPropertyInitialization": true, // S'assure que les propriétés de classe sont initialisées
+    "noUnusedLocals": true, // Signale les variables inutilisées
+    "noUnusedParameters": true, // Signale les paramètres inutilisés
+    "noImplicitReturns": true, // Vérifie qu'une fonction retourne une valeur dans tous les cas
+    "noFallthroughCasesInSwitch": true, // Empêche les cas `switch` de tomber à travers
+    "esModuleInterop": true, // Assure la compatibilité avec les modules CommonJS
+    "experimentalDecorators": true, // Support pour les décorateurs TypeScript
+    "emitDecoratorMetadata": true, // Génère les métadonnées pour les décorateurs (important pour l'injection de dépendances)
+    "forceConsistentCasingInFileNames": true, // Vérifie la casse des noms de fichiers
+    "noImplicitOverride": true, // Exige que les méthodes surchargées soient explicitement marquées
+    "allowSyntheticDefaultImports": true, // Permet l'importation par défaut synthétique
+    "useDefineForClassFields": true, // Utilise `define` pour les champs de classe (aligné sur ES2022)
+    "skipLibCheck": true, // Ignore les vérifications des types des bibliothèques
+    "moduleResolution": "node", // Mode de résolution des modules compatible Node.js
+    "resolveJsonModule": true // Permet l'importation de fichiers JSON
+  },
+  "include": [
+    "src/**/*.ts", // Inclut tous les fichiers TypeScript dans src
+    "migrations/**/*.ts" // Inclut les migrations
+  ],
+  "exclude": [
+    "node_modules", // Exclut les dépendances
+    "build", // Exclut les fichiers compilés
+    "test", // Exclut les tests de la compilation
+    "coverage" // Exclut les rapports de couverture de test
+  ]
+}

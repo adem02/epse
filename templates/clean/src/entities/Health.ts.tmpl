@@ -1,0 +1,8 @@
+export interface HealthInterface {
+  status: 'up' | 'down'; // Statut général
+  dbStatus: 'on' | 'off'; // Statut de la base de données
+  timestamp?: string; // Horodatage au format ISO 8601
+  appVersion?: string; // Version de l'application
+  message?: string; // Message explicatif ou détaillé
+  globalStatus?: 'up' | 'degraded' | 'down'; // Statut global
+}

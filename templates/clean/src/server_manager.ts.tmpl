@@ -1,0 +1,92 @@
+import Express, { json, urlencoded } from 'express';
+import { Server, createServer } from 'http';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { apiConfig } from './frameworks/api.config';
+import { RegisterRoutes } from './frameworks/tsoa/routes';
+import { ErrorHandlerMiddleware } from './adapters/middlewares/error-handler.middleware';
+import Logger from './frameworks/logger.config';
+import httpLogger from './adapters/middlewares/http-logger.middleware';
+
+export class ServerManager {
+  private readonly PORT: number = apiConfig.port;
+  private readonly app = Express();
+
+  constructor() {
+    this.configureMiddlewares();
+    this.configureRoutes();
+    this.handleErrors();
+    this.handleProcessEvents();
+  }
+
+  private configureMiddlewares(): void {
+    this.app.use(
+      cors({
+        origin: apiConfig.cors.origin,
+        methods: apiConfig.cors.methods,
+        allowedHeaders: apiConfig.cors.allowedHeaders,
+      }),
+    );
+
+    this.app.use(json());
+    this.app.use(urlencoded({ extended: true }));
+    this.app.use(httpLogger);
+    this.app.use(Express.static('public'));
+  }
+
+  private configureRoutes(): void {
+    RegisterRoutes(this.app);
+
+    this.app.use(
+      apiConfig.swagger.docsPath,
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, {
+        swaggerOptions: { url: apiConfig.swagger.swaggerJsonUrl },
+      }),
+    );
+  }
+
+  private handleErrors(): void {
+    this.app.use(ErrorHandlerMiddleware);
+  }
+
+  private handleProcessEvents(): void {
+    process.on('uncaughtException', (err) => {
+      Logger.error('Uncaught Exception:', err);
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', (reason) => {
+      Logger.error('Unhandled Rejection:', reason);
+      process.exit(1);
+    });
+  }
+
+  public async start(): Promise<Server> {
+    const server = createServer(this.app);
+
+    return new Promise((resolve) => {
+      server.listen(this.PORT, () => {
+        Logger.info(`API Listening on port ${this.PORT}`);
+        Logger.debug(`We are in ${apiConfig.environment} mode`);
+        resolve(server);
+      });
+    });
+  }
+
+  public async stop(server?: Server): Promise<void> {
+    if (!server) return;
+
+    return new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        if (err) {
+          Logger.error('Failed to close server!', err);
+          reject(err);
+        } else {
+          Logger.info('Server closed successfully');
+          resolve();
+        }
+      });
+    });
+  }
+}

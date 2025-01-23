@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"os"
 )
 
@@ -11,10 +12,6 @@ func GetAbsolutePath() (string, error) {
 	}
 	return cwd, nil
 }
-
-var GetLiteTemplatesPath = "templates/lite"
-var GetCleanTemplatesPath = "templates/clean"
-var SrcPath = "src/"
 
 func GetLiteFilesTemplatesPaths() map[string]string {
 	liteTemplatesPath := GetLiteTemplatesPath + "/"
@@ -86,6 +83,18 @@ func GetCleanFilesTemplatesPaths() map[string]string {
 		// Test files templates
 		testPath + "test-server.ts": cleanTmplPath + testPath + "test-server.ts.tmpl",
 	}
+}
+
+func GetTemplatePathsByProjectType(projectType ProjectType) (map[string]string, error) {
+	if projectType != "lite" && projectType != "clean" {
+		return nil, errors.New("invalid project type")
+	}
+
+	if projectType == "lite" {
+		return GetLiteFilesTemplatesPaths(), nil
+	}
+
+	return GetCleanFilesTemplatesPaths(), nil
 }
 
 func GetCleanProjectDependencies() map[string][]string {

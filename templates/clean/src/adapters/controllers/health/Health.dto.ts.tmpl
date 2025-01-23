@@ -5,7 +5,7 @@ export class HealthOutputDto {
   readonly dbStatus: string;
 
   constructor(response: HealthInterface) {
-    this.status = response.status === 'up' ? 'OK' : 'KO';;
+    this.status = response.status === 'up' ? 'OK' : 'KO';
     this.dbStatus = response.dbStatus === 'on' ? 'Connected' : 'Disconnected';
   }
 }

@@ -8,7 +8,6 @@ import { HealthOutputDto } from './Health.dto';
 @Route('health')
 @injectable()
 export class HealthController extends Controller {
-
   constructor(
     private readonly healthService: HealthService,
     @inject(LoggerInterfaceToken) private readonly logger: LoggerInterface,

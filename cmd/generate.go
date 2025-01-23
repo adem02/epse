@@ -10,6 +10,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/adem02/epse/internal/generator"
+	"github.com/adem02/epse/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +42,8 @@ func init() {
 }
 
 func runInteractive() {
-	var projectName, projectType, destination string
+	var projectName, destination string
+	var projectType utils.ProjectType
 
 	survey.AskOne(&survey.Input{
 		Message: "Nom du projet :",
@@ -62,16 +64,16 @@ func runInteractive() {
 	}, &destination)
 
 	if projectType == "Lite - Node + Express/TypeScript" {
-		projectType = "lite"
+		projectType = utils.LiteProjectType
 	} else if projectType == "Clean - Node + Express/TypeScript + TSOA + Clean Architecture" {
-		projectType = "clean"
+		projectType = utils.CleanProjectType
 	}
 
 	if !strings.HasSuffix(destination, "/") {
 		destination += "/"
 	}
 
-	err := createProjectStructureByType(projectName, projectType, destination)
+	err := createProjectStructureByType(projectType, projectName, destination)
 
 	if err != nil {
 		fmt.Println(err)
@@ -91,13 +93,13 @@ func runWithArguments(args []string) {
 		destination += "/"
 	}
 
-	projectType := "lite"
+	projectType := utils.LiteProjectType
 
 	if clean {
-		projectType = "clean"
+		projectType = utils.CleanProjectType
 	}
 
-	err := createProjectStructureByType(projectName, projectType, destination)
+	err := createProjectStructureByType(projectType, projectName, destination)
 
 	if err != nil {
 		fmt.Println(err)
@@ -105,9 +107,9 @@ func runWithArguments(args []string) {
 	}
 }
 
-func createProjectStructureByType(projectName, projectType, destination string) error {
+func createProjectStructureByType(projectType utils.ProjectType, projectName, destination string) error {
 	if projectType == "clean" || projectType == "lite" {
-		newGenerator, err := generator.New(projectName, projectType, destination)
+		newGenerator, err := generator.New(projectType, projectName, destination)
 
 		if err != nil {
 			return err

@@ -1,41 +1,46 @@
 package utils
 
-import "fmt"
+import "errors"
 
-func GetLiteDirectoriesPaths(basePath string) []string {
-	return []string{
-		fmt.Sprintf("%s/src", basePath),
-		fmt.Sprintf("%s/test", basePath),
-		fmt.Sprintf("%s/src/controllers", basePath),
-		fmt.Sprintf("%s/src/models", basePath),
-		fmt.Sprintf("%s/src/middlewares", basePath),
-		fmt.Sprintf("%s/src/repositories", basePath),
-		fmt.Sprintf("%s/src/types", basePath),
-		fmt.Sprintf("%s/src/services", basePath),
-		fmt.Sprintf("%s/src/utils", basePath),
-		fmt.Sprintf("%s/src/routes", basePath),
-		fmt.Sprintf("%s/src/config", basePath),
-	}
+var directoriesPathsMappedByProjectType = map[ProjectType][]string{
+	LiteProjectType: {
+		"src",
+		"test",
+		"src/controllers",
+		"src/models",
+		"src/middlewares",
+		"src/repositories",
+		"src/types",
+		"src/services",
+		"src/utils",
+		"src/routes",
+		"src/config",
+	},
+	CleanProjectType: {
+		"test",
+		"src",
+		"src/adapters",
+		"src/entities",
+		"src/frameworks",
+		"src/useCases",
+		"src/utilities",
+		"src/adapters/controllers",
+		"src/adapters/controllers/health",
+		"src/adapters/gateway",
+		"src/adapters/middlewares",
+		"src/adapters/services",
+		"src/entities/error",
+		"src/entities/types",
+		"src/entities/logger",
+		"src/frameworks/tsoa",
+		"src/frameworks/tsoa/services",
+	},
 }
 
-func GetCleanDirectoriesPaths(basePath string) []string {
-	return []string{
-		fmt.Sprintf("%s/test", basePath),
-		fmt.Sprintf("%s/src", basePath),
-		fmt.Sprintf("%s/src/adapters", basePath),
-		fmt.Sprintf("%s/src/entities", basePath),
-		fmt.Sprintf("%s/src/frameworks", basePath),
-		fmt.Sprintf("%s/src/useCases", basePath),
-		fmt.Sprintf("%s/src/utilities", basePath),
-		fmt.Sprintf("%s/src/adapters/controllers", basePath),
-		fmt.Sprintf("%s/src/adapters/controllers/health", basePath),
-		fmt.Sprintf("%s/src/adapters/gateway", basePath),
-		fmt.Sprintf("%s/src/adapters/middlewares", basePath),
-		fmt.Sprintf("%s/src/adapters/services", basePath),
-		fmt.Sprintf("%s/src/entities/error", basePath),
-		fmt.Sprintf("%s/src/entities/types", basePath),
-		fmt.Sprintf("%s/src/entities/logger", basePath),
-		fmt.Sprintf("%s/src/frameworks/tsoa", basePath),
-		fmt.Sprintf("%s/src/frameworks/tsoa/services", basePath),
+func GetProjectStructureByType(projectType ProjectType) ([]string, error) {
+	if projectType != LiteProjectType && projectType != CleanProjectType {
+		return nil, errors.New("invalid project type")
 	}
+
+	return directoriesPathsMappedByProjectType[projectType], nil
 }

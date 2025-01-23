@@ -2,13 +2,11 @@ import { LoggerInterfaceToken } from '../../../utilities/di.constants';
 import { LoggerService } from '../../../adapters/services/Logger.service';
 
 interface ServiceRegistration {
-  token: symbol | string,
-  class?: new (...args: any[]) => any,
-  value?: any
+  token: symbol | string;
+  class?: new (...args: any[]) => any;
+  value?: any;
 }
 
-const AppServices: ServiceRegistration[] = [
-  {token: LoggerInterfaceToken, class: LoggerService},
-];
+const AppServices: ServiceRegistration[] = [{ token: LoggerInterfaceToken, class: LoggerService }];
 
 export default AppServices;

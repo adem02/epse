@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ export const apiConfig = {
   basePath: '/api',
   cors: {
     origin: process.env.NODE_ENV !== 'development' ? process.env.CORS_ORIGIN : '*',
-    methods: ['GET', 'POST', 'PUT',,  'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Authorization', 'Content-Type'],
   },
   swagger: {

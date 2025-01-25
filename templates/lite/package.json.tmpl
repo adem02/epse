@@ -2,6 +2,8 @@
   "name": "{{.ProjectName}}",
   "version": "1.0.0",
   "description": "Generated project",
+  "author": "",
+  "license": "ISC",
   "main": "build/src/index.js",
   "_moduleAliases": {
     "@": "build/src"
@@ -18,6 +20,6 @@
     "ta": "npm run unit && npm run integration && npm run e2e",
     "qa-ta": "npm run qa && npm run ta"
   },
-  "author": "",
-  "license": "ISC"
+  "dependencies": {{.Dependencies}},
+  "devDependencies": {{.DevDependencies}}
 }

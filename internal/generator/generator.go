@@ -3,7 +3,6 @@ package generator
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/fatih/color"
 
@@ -17,7 +16,6 @@ type Generator struct {
 	Destination string
 }
 
-var title = color.New(color.Bold, color.FgCyan).SprintFunc()
 var section = color.New(color.Bold, color.FgGreen).SprintFunc()
 var info = color.New(color.FgHiBlue).SprintFunc()
 var success = color.New(color.FgGreen).SprintFunc()
@@ -30,7 +28,6 @@ func generateLiteStructure(projectName, destination string) error {
 	}
 
 	displayEndingMessage(projectName, destination, utils.LiteProjectType)
-	displayProjectDependenciesMessage(utils.GetLiteProjectDependencies())
 
 	return nil
 }
@@ -42,7 +39,6 @@ func generateCleanStructure(projectName, destination string) error {
 	}
 
 	displayEndingMessage(projectName, destination, utils.CleanProjectType)
-	displayProjectDependenciesMessage(utils.GetCleanProjectDependencies())
 
 	return nil
 }
@@ -78,22 +74,10 @@ func displayEndingMessage(projectName, destination string, projectType utils.Pro
 	fmt.Printf("   📂 %s: %s\n", section("Projet généré"), info(projectName))
 	fmt.Printf("   📍 %s: %s\n", section("Emplacement"), info(destination))
 	fmt.Printf("   🏗️ %s: %s\n\n", section("Type de projet"), info(projectType))
-}
 
-func displayProjectDependenciesMessage(allDependencies map[string][]string) {
-	dependencies := strings.Join(allDependencies["dependencies"], " ")
-	devDependencies := strings.Join(allDependencies["devDependencies"], " ")
+	fmt.Println(warning("🚀 Installez les dépendances"))
+	fmt.Println(info("   npm install\n"))
 
-	fmt.Println(warning("🚀 Étape suivante : Installez les dépendances"))
-	fmt.Print("   Utilisez les commandes suivantes :\n\n")
-
-	fmt.Println("   Avec npm :")
-	fmt.Println(info(fmt.Sprintf("    npm install %s\n", dependencies)))
-	fmt.Println(info(fmt.Sprintf("    npm install --save-dev %s\n", devDependencies)))
-
-	fmt.Println("   Avec yarn :")
-	fmt.Println(info(fmt.Sprintf("    yarn add %s\n", dependencies)))
-	fmt.Println(info(fmt.Sprintf("    yarn add --dev %s\n", devDependencies)))
-
-	fmt.Println(success("🎉 Votre projet est prêt ! Bon développement 🚀"))
+	fmt.Println(warning("🚀 Lancez le projet"))
+	fmt.Println(info("   npm run dev\n"))
 }

@@ -2,15 +2,30 @@ package utils
 
 import (
 	"errors"
-	"os"
+	"fmt"
 )
 
-func GetAbsolutePath() (string, error) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return "", err
+var directoriesPathsMappedByProjectType = map[ProjectType][]string{
+	LiteProjectType: {
+		"test", "src/controllers", "src/models", "src/middlewares",
+		"src/repositories", "src/types", "src/services", "src/utils",
+		"src/routes", "src/config",
+	},
+	CleanProjectType: {
+		"test", "src/useCases", "src/utilities",
+		"src/adapters/controllers/health", "src/adapters/gateway",
+		"src/adapters/middlewares", "src/adapters/services",
+		"src/entities/error", "src/entities/types", "src/entities/logger",
+		"src/frameworks/tsoa/services",
+	},
+}
+
+func GetProjectStructureByType(projectType ProjectType) ([]string, error) {
+	if projectType != LiteProjectType && projectType != CleanProjectType {
+		return nil, errors.New("invalid project type")
 	}
-	return cwd, nil
+
+	return directoriesPathsMappedByProjectType[projectType], nil
 }
 
 func GetLiteFilesTemplatesPaths() map[string]string {
@@ -86,82 +101,13 @@ func GetCleanFilesTemplatesPaths() map[string]string {
 }
 
 func GetTemplatePathsByProjectType(projectType ProjectType) (map[string]string, error) {
-	if projectType != "lite" && projectType != "clean" {
-		return nil, errors.New("invalid project type")
+	if projectType != LiteProjectType && projectType != CleanProjectType {
+		return nil, fmt.Errorf("invalid project type: %s", projectType)
 	}
 
-	if projectType == "lite" {
+	if projectType == LiteProjectType {
 		return GetLiteFilesTemplatesPaths(), nil
 	}
 
 	return GetCleanFilesTemplatesPaths(), nil
-}
-
-func GetCleanProjectDependencies() map[string][]string {
-	return map[string][]string{
-		"dependencies": {
-			"cors",
-			"dotenv",
-			"express",
-			"pino",
-			"pino-http",
-			"reflect-metadata",
-			"swagger-ui-express",
-			"tsoa",
-			"tsyringe",
-			"uuid",
-		},
-		"devDependencies": {
-			"@eslint/js",
-			"@types/cors",
-			"@types/express",
-			"@types/jest",
-			"@types/node",
-			"@types/supertest",
-			"@types/swagger-ui-express",
-			"@types/uuid",
-			"env-cmd",
-			"eslint",
-			"jest",
-			"pino-pretty",
-			"prettier",
-			"rimraf",
-			"supertest",
-			"ts-jest",
-			"ts-node-dev",
-			"tsc-alias",
-			"tsconfig-paths",
-			"typescript",
-			"typescript-eslint",
-		},
-	}
-}
-
-func GetLiteProjectDependencies() map[string][]string {
-	return map[string][]string{
-		"dependencies": {
-			"cors",
-			"dotenv",
-			"express",
-			"module-alias",
-			"pino",
-			"pino-http",
-			"uuid",
-		},
-		"devDependencies": {
-			"@eslint/js",
-			"@types/cors",
-			"@types/express",
-			"@types/node",
-			"eslint",
-			"globals",
-			"pino-pretty",
-			"prettier",
-			"ts-node-dev",
-			"tsconfig-paths",
-			"typescript",
-			"typescript-eslint",
-			"@types/uuid",
-		},
-	}
 }

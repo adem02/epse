@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-var NpmAPIUrl string = "https://registry.npmjs.org"
+var NpmAPIUrl = "https://registry.npmjs.org"
 
 type PackageInfo struct {
 	DistTags struct {

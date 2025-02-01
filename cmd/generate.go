@@ -4,14 +4,12 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"strings"
-
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/adem02/epse/internal/generator"
 	"github.com/adem02/epse/internal/utils"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var lite, clean bool
@@ -45,12 +43,12 @@ func runInteractive() {
 	var projectName, destination string
 	var projectType utils.ProjectType
 
-	survey.AskOne(&survey.Input{
+	getInput(&survey.Input{
 		Message: "Nom du projet :",
 		Default: "api",
 	}, &projectName)
 
-	survey.AskOne(&survey.Select{
+	getInput(&survey.Select{
 		Message: "Type de structure :",
 		Options: []string{
 			"Lite - Node + Express/TypeScript",
@@ -58,7 +56,7 @@ func runInteractive() {
 		},
 	}, &projectType)
 
-	survey.AskOne(&survey.Input{
+	getInput(&survey.Input{
 		Message: "Emplacement du projet (défaut : ./) :",
 		Default: "./",
 	}, &destination)
@@ -69,13 +67,7 @@ func runInteractive() {
 		projectType = utils.CleanProjectType
 	}
 
-	if !strings.HasSuffix(destination, "/") {
-		destination += "/"
-	}
-
-	err := createProjectStructureByType(projectType, projectName, destination)
-
-	if err != nil {
+	if err := createProjectStructureByType(projectType, projectName, destination); err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -89,34 +81,25 @@ func runWithArguments(args []string) {
 		destination = args[1]
 	}
 
-	if !strings.HasSuffix(destination, "/") {
-		destination += "/"
-	}
-
 	projectType := utils.LiteProjectType
 
 	if clean {
 		projectType = utils.CleanProjectType
 	}
 
-	err := createProjectStructureByType(projectType, projectName, destination)
-
-	if err != nil {
-		fmt.Println(err)
+	if err := createProjectStructureByType(projectType, projectName, destination); err != nil {
+		utils.Ui{}.UiError(err)
 		return
 	}
 }
 
 func createProjectStructureByType(projectType utils.ProjectType, projectName, destination string) error {
-	if projectType == "clean" || projectType == "lite" {
-		newGenerator, err := generator.New(projectType, projectName, destination)
+	return generator.GenerateStructure(projectType, projectName, destination)
+}
 
-		if err != nil {
-			return err
-		}
-
-		return newGenerator.GenerateProjectStructure()
-	} else {
-		return errors.New("❌ invalid project type")
+func getInput(prompt survey.Prompt, response interface{}) {
+	if err := survey.AskOne(prompt, response); err != nil {
+		utils.Ui{}.UiError(fmt.Errorf("\n  interruption détectée. Fermeture...\n"))
+		os.Exit(1)
 	}
 }

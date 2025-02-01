@@ -9,7 +9,7 @@ var directoriesPathsMappedByProjectType = map[ProjectType][]string{
 	LiteProjectType: {
 		"test", "src/controllers", "src/models", "src/middlewares",
 		"src/repositories", "src/types", "src/services", "src/utils",
-		"src/routes", "src/config",
+		"src/routes", "src/config", "src/errors",
 	},
 	CleanProjectType: {
 		"test", "src/useCases", "src/utilities",
@@ -31,9 +31,13 @@ func GetProjectStructureByType(projectType ProjectType) ([]string, error) {
 func GetLiteFilesTemplatesPaths() map[string]string {
 	liteTemplatesPath := GetLiteTemplatesPath + "/"
 
-	routesPath, configPath, middlewaresPath := SrcPath+"routes/", SrcPath+"config/", SrcPath+"middlewares/"
-	srcTmplPath, routesTmplPath, configTmplPath, middlewaresTmplPath :=
-		liteTemplatesPath+SrcPath, liteTemplatesPath+routesPath, liteTemplatesPath+configPath, liteTemplatesPath+middlewaresPath
+	routesPath, configPath, middlewaresPath, errorsPath := SrcPath+"routes/", SrcPath+"config/", SrcPath+"middlewares/", SrcPath+"errors/"
+
+	srcTmplPath, routesTmplPath,
+		configTmplPath, middlewaresTmplPath, errorsTmplPath :=
+		liteTemplatesPath+SrcPath, liteTemplatesPath+routesPath,
+		liteTemplatesPath+configPath, liteTemplatesPath+middlewaresPath,
+		liteTemplatesPath+errorsPath
 
 	return map[string]string{
 		"package.json":                  liteTemplatesPath + "package.json.tmpl",
@@ -47,7 +51,13 @@ func GetLiteFilesTemplatesPaths() map[string]string {
 		routesPath + "index.ts":         routesTmplPath + "index.ts.tmpl",
 		configPath + "api.config.ts":    configTmplPath + "api.config.ts.tmpl",
 		configPath + "logger.config.ts": configTmplPath + "logger.config.ts.tmpl",
-		middlewaresPath + "http_logger.middleware.ts": middlewaresTmplPath + "http_logger.middleware.ts.tmpl",
+		middlewaresPath + "http-logger.middleware.ts":   middlewaresTmplPath + "http-logger.middleware.ts.tmpl",
+		middlewaresPath + "error-handler.middleware.ts": middlewaresTmplPath + "error-handler.middleware.ts.tmpl",
+		errorsPath + "ApiError.interface.ts":            errorsTmplPath + "ApiError.interface.ts.tmpl",
+		errorsPath + "ApiError.ts":                      errorsTmplPath + "ApiError.ts.tmpl",
+		errorsPath + "ApiErrorCode.enum.ts":             errorsTmplPath + "ApiErrorCode.enum.ts.tmpl",
+		errorsPath + "ApiErrorKey.type.ts":              errorsTmplPath + "ApiErrorKey.type.ts.tmpl",
+		errorsPath + "index.ts":                         errorsTmplPath + "index.ts.tmpl",
 	}
 }
 

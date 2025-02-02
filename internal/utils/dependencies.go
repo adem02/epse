@@ -38,7 +38,7 @@ func cleanProjectDependencies() DependencyMap {
 }
 
 func liteProjectDependencies() DependencyMap {
-	dependencies := []string{"module-alias"}
+	dependencies := []string{"module-alias", "express-async-errors"}
 	devDependencies := []string{}
 	return DependencyMap{
 		Dependencies:    append(dependencies, commonDependencies[Dependencies]...),

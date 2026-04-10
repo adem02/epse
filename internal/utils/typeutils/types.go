@@ -39,3 +39,7 @@ var ConfigFileBaseRoute = RouteData{
 	Domaine:       "health",
 	RouteBasePath: "/health",
 }
+
+type CustomMiddlewareData struct {
+	Name string `json:"name"`
+}

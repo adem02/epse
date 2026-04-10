@@ -1,0 +1,20 @@
+import { Controller, Get, Route, SuccessResponse, Path } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @Get('{{.RouteUrl}}')
+  @SuccessResponse(200, 'OK')
+  public async execute(
+    @Path() {{.ParamName}}: string
+  ): Promise<void> {
+    // TODO: Implement GET logic
+
+    this.setStatus(200);
+  }
+}

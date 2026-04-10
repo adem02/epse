@@ -1,0 +1,15 @@
+import { Request, Response, NextFunction } from 'express';
+
+export const {{.ControllerFunc}} = async (
+  _: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    // TODO: Implement GET logic
+
+    res.json([]);
+  } catch (error) {
+    next(error);
+  }
+};

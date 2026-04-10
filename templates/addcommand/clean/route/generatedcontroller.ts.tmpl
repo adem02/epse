@@ -1,0 +1,16 @@
+import { Controller, {{.RouteMethod}}, Route, SuccessResponse } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @{{.RouteMethod}}('{{.RouteUrl}}')
+  @SuccessResponse(200, 'OK')
+  public async execute(): Promise<void> {
+
+  }
+}

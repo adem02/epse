@@ -1,0 +1,13 @@
+{
+  "projectName": "lite_project_to_delete",
+  "projectType": "lite",
+  "controllersPath": "src/controllers",
+  "database": false,
+  "auth": false,
+  "routes": [
+    {
+      "domaine": "health",
+      "routeBasePath": "/health"
+    }
+  ]
+}

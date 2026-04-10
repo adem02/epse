@@ -1,4 +1,4 @@
-package utils
+package typeutils
 
 type ProjectType string
 type DependencyType string
@@ -13,10 +13,29 @@ const (
 	SrcPath               string         = "src/"
 	Dependencies          DependencyType = "dependencies"
 	DevDependencies       DependencyType = "devDependencies"
+	LiteControllersPath   string         = "src/controllers"
+	CleanControllersPath  string         = "src/adapters/controllers"
 )
 
 type TmplData struct {
 	ProjectName     string
 	Dependencies    string
 	DevDependencies string
+	ProjectType     string
+	ControllersPath string
+}
+
+var ControllersPathMappedByProjectType = map[ProjectType]string{
+	LiteProjectType:  "src/controllers",
+	CleanProjectType: "src/adapters/controllers",
+}
+
+type RouteData struct {
+	Domaine       string `json:"domaine"`
+	RouteBasePath string `json:"routeBasePath"`
+}
+
+var ConfigFileBaseRoute = RouteData{
+	Domaine:       "health",
+	RouteBasePath: "/health",
 }

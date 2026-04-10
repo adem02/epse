@@ -1,17 +1,21 @@
-package utils
+package project
 
 import (
-	"errors"
 	"fmt"
+	"path/filepath"
+
+	"github.com/adem02/epse/internal/utils/logutils"
+	"github.com/adem02/epse/internal/utils/osutils"
+	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
-var directoriesPathsMappedByProjectType = map[ProjectType][]string{
-	LiteProjectType: {
-		"test", "src/controllers", "src/models", "src/middlewares",
+var ProjectStructureMappedByProjectType = map[typeutils.ProjectType][]string{
+	typeutils.LiteProjectType: {
+		"test", "src/controllers/health", "src/models", "src/middlewares",
 		"src/repositories", "src/types", "src/services", "src/utils",
 		"src/routes", "src/config", "src/errors",
 	},
-	CleanProjectType: {
+	typeutils.CleanProjectType: {
 		"test", "src/useCases", "src/utilities",
 		"src/adapters/controllers/health", "src/adapters/gateway",
 		"src/adapters/middlewares", "src/adapters/services",
@@ -20,37 +24,47 @@ var directoriesPathsMappedByProjectType = map[ProjectType][]string{
 	},
 }
 
-func GetProjectStructureByType(projectType ProjectType) ([]string, error) {
-	if projectType != LiteProjectType && projectType != CleanProjectType {
-		return nil, errors.New("invalid project type")
+func GetProjectStructureByType(projectType typeutils.ProjectType) ([]string, error) {
+	if projectType != typeutils.LiteProjectType && projectType != typeutils.CleanProjectType {
+		return nil, fmt.Errorf("invalid project type")
 	}
 
-	return directoriesPathsMappedByProjectType[projectType], nil
+	return ProjectStructureMappedByProjectType[projectType], nil
 }
 
 func GetLiteFilesTemplatesPaths() map[string]string {
-	liteTemplatesPath := GetLiteTemplatesPath + "/"
+	liteTemplatesPath := typeutils.GetLiteTemplatesPath + "/"
 
-	routesPath, configPath, middlewaresPath, errorsPath := SrcPath+"routes/", SrcPath+"config/", SrcPath+"middlewares/", SrcPath+"errors/"
+	routesPath,
+		configPath,
+		middlewaresPath,
+		controllersPath,
+		errorsPath := typeutils.SrcPath+"routes/",
+		typeutils.SrcPath+"config/",
+		typeutils.SrcPath+"middlewares/",
+		typeutils.SrcPath+"controllers/",
+		typeutils.SrcPath+"errors/"
 
-	srcTmplPath, routesTmplPath,
+	srcTmplPath, routesTmplPath, controllersTmplPath,
 		configTmplPath, middlewaresTmplPath, errorsTmplPath :=
-		liteTemplatesPath+SrcPath, liteTemplatesPath+routesPath,
+		liteTemplatesPath+typeutils.SrcPath, liteTemplatesPath+routesPath, liteTemplatesPath+controllersPath,
 		liteTemplatesPath+configPath, liteTemplatesPath+middlewaresPath,
 		liteTemplatesPath+errorsPath
 
 	return map[string]string{
-		"package.json":                  liteTemplatesPath + "package.json.tmpl",
-		"README.md":                     liteTemplatesPath + "README.md.tmpl",
-		"tsconfig.json":                 liteTemplatesPath + "tsconfig.json.tmpl",
-		".env":                          liteTemplatesPath + ".env.tmpl",
-		".prettierrc":                   liteTemplatesPath + ".prettierrc.tmpl",
-		".prettierignore":               liteTemplatesPath + ".prettierignore.tmpl",
-		"eslint.config.mjs":             liteTemplatesPath + "eslint.config.mjs.tmpl",
-		SrcPath + "index.ts":            srcTmplPath + "index.ts.tmpl",
-		routesPath + "index.ts":         routesTmplPath + "index.ts.tmpl",
-		configPath + "api.config.ts":    configTmplPath + "api.config.ts.tmpl",
-		configPath + "logger.config.ts": configTmplPath + "logger.config.ts.tmpl",
+		"package.json":      liteTemplatesPath + "package.json.tmpl",
+		"README.md":         liteTemplatesPath + "README.md.tmpl",
+		"tsconfig.json":     liteTemplatesPath + "tsconfig.json.tmpl",
+		".env":              liteTemplatesPath + ".env.tmpl",
+		".prettierrc":       liteTemplatesPath + ".prettierrc.tmpl",
+		".prettierignore":   liteTemplatesPath + ".prettierignore.tmpl",
+		"eslint.config.mjs": liteTemplatesPath + "eslint.config.mjs.tmpl",
+
+		typeutils.SrcPath + "index.ts":                  srcTmplPath + "index.ts.tmpl",
+		routesPath + "index.ts":                         routesTmplPath + "index.ts.tmpl",
+		controllersPath + "health/health.controller.ts": controllersTmplPath + "health/health.controller.ts.tmpl",
+		configPath + "api.config.ts":                    configTmplPath + "api.config.ts.tmpl",
+		configPath + "logger.config.ts":                 configTmplPath + "logger.config.ts.tmpl",
 		middlewaresPath + "http-logger.middleware.ts":   middlewaresTmplPath + "http-logger.middleware.ts.tmpl",
 		middlewaresPath + "error-handler.middleware.ts": middlewaresTmplPath + "error-handler.middleware.ts.tmpl",
 		errorsPath + "ApiError.interface.ts":            errorsTmplPath + "ApiError.interface.ts.tmpl",
@@ -62,10 +76,10 @@ func GetLiteFilesTemplatesPaths() map[string]string {
 }
 
 func GetCleanFilesTemplatesPaths() map[string]string {
-	cleanTmplPath := GetCleanTemplatesPath + "/"
+	cleanTmplPath := typeutils.GetCleanTemplatesPath + "/"
 
 	adaptersPath, entitiesPath, frameworksPath, utilitiesPath :=
-		SrcPath+"adapters/", SrcPath+"entities/", SrcPath+"frameworks/", SrcPath+"utilities/"
+		typeutils.SrcPath+"adapters/", typeutils.SrcPath+"entities/", typeutils.SrcPath+"frameworks/", typeutils.SrcPath+"utilities/"
 
 	adaptersTmplPath, entitiesTmplPath, frameworksTmplPath, utilitiesTmplPath :=
 		cleanTmplPath+adaptersPath, cleanTmplPath+entitiesPath, cleanTmplPath+frameworksPath, cleanTmplPath+utilitiesPath
@@ -83,7 +97,6 @@ func GetCleanFilesTemplatesPaths() map[string]string {
 		"tsconfig.json":     cleanTmplPath + "tsconfig.json.tmpl",
 		"tsoa.json":         cleanTmplPath + "tsoa.json.tmpl",
 
-		// Source files templates
 		adaptersPath + "controllers/health/Health.controller.ts": adaptersTmplPath + "controllers/health/Health.controller.ts.tmpl",
 		adaptersPath + "controllers/health/Health.dto.ts":        adaptersTmplPath + "controllers/health/Health.dto.ts.tmpl",
 		adaptersPath + "services/Logger.service.ts":              adaptersTmplPath + "services/Logger.service.ts.tmpl",
@@ -102,22 +115,42 @@ func GetCleanFilesTemplatesPaths() map[string]string {
 		frameworksPath + "api.config.ts":                         frameworksTmplPath + "api.config.ts.tmpl",
 		frameworksPath + "logger.config.ts":                      frameworksTmplPath + "logger.config.ts.tmpl",
 		utilitiesPath + "di.constants.ts":                        utilitiesTmplPath + "di.constants.ts.tmpl",
-		SrcPath + "server.ts":                                    cleanTmplPath + SrcPath + "server.ts.tmpl",
-		SrcPath + "server_manager.ts":                            cleanTmplPath + SrcPath + "server_manager.ts.tmpl",
+		typeutils.SrcPath + "server.ts":                          cleanTmplPath + typeutils.SrcPath + "server.ts.tmpl",
+		typeutils.SrcPath + "server_manager.ts":                  cleanTmplPath + typeutils.SrcPath + "server_manager.ts.tmpl",
 
-		// Test files templates
 		testPath + "test-server.ts": cleanTmplPath + testPath + "test-server.ts.tmpl",
 	}
 }
 
-func GetTemplatePathsByProjectType(projectType ProjectType) (map[string]string, error) {
-	if projectType != LiteProjectType && projectType != CleanProjectType {
+func GetTemplatePathsByProjectType(projectType typeutils.ProjectType) (map[string]string, error) {
+	if projectType != typeutils.LiteProjectType && projectType != typeutils.CleanProjectType {
 		return nil, fmt.Errorf("invalid project type: %s", projectType)
 	}
 
-	if projectType == LiteProjectType {
+	if projectType == typeutils.LiteProjectType {
 		return GetLiteFilesTemplatesPaths(), nil
 	}
 
 	return GetCleanFilesTemplatesPaths(), nil
+}
+
+func CreateProjectStructureByType(projectPath string, projectType typeutils.ProjectType) error {
+	logutils.Logger{}.Info(fmt.Sprintf("📂 Creating project structure for %s project...", projectType))
+	if osutils.FileOrDirectoryExists(projectPath) {
+		return fmt.Errorf(`❌ error generating structure, project already exists: %s`, projectPath)
+	}
+
+	projectStructure, err := GetProjectStructureByType(projectType)
+	if err != nil {
+		return err
+	}
+
+	for _, directory := range projectStructure {
+		directoryPath := filepath.Join(projectPath, directory)
+		if err := osutils.CreateDirectory(directoryPath); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

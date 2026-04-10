@@ -1,0 +1,21 @@
+import { Controller, Put, Route, SuccessResponse, Path, Body } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @Put('{{.RouteUrl}}')
+  @SuccessResponse(200, 'OK')
+  public async execute(
+    @Path() {{.ParamName}}: string,
+    @Body() body: any
+  ): Promise<void> {
+    // TODO: Implement PUT logic
+
+    this.setStatus(200);
+  }
+}

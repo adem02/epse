@@ -1,0 +1,21 @@
+import { Controller, Patch, Route, SuccessResponse, Path, Body } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @Patch('{{.RouteUrl}}')
+  @SuccessResponse(200, 'OK')
+  public async execute(
+    @Path() {{.ParamName}}: string,
+    @Body() body: any
+  ): Promise<void> {
+    // TODO: Implement PATCH logic
+
+    this.setStatus(200);
+  }
+}

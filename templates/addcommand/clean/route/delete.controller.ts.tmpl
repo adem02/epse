@@ -1,0 +1,20 @@
+import { Controller, Delete, Route, SuccessResponse, Path } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @Delete('{{.RouteUrl}}')
+  @SuccessResponse(204, 'No Content')
+  public async execute(
+    @Path() {{.ParamName}}: string
+  ): Promise<void> {
+    // TODO: Implement DELETE logic
+
+    this.setStatus(204);
+  }
+}

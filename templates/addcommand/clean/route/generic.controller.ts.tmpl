@@ -1,0 +1,17 @@
+import { Controller, Route, SuccessResponse } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @SuccessResponse(200, 'OK')
+  public async execute(): Promise<void> {
+    // TODO: Implement logic
+
+    this.setStatus(200);
+  }
+}

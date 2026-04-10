@@ -1,21 +1,21 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package generate
 
 import (
-	"fmt"
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/adem02/epse/internal/generator"
-	"github.com/adem02/epse/internal/utils"
+	"github.com/adem02/epse/internal/project"
+	"github.com/adem02/epse/internal/utils/logutils"
+	"github.com/adem02/epse/internal/utils/typeutils"
+	"github.com/adem02/epse/internal/utils/ui"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var lite, clean bool
 
-// generateCmd represents the generate command
-var generateCmd = &cobra.Command{
+// GenerateCmd represents the generate command
+var GenerateCmd = &cobra.Command{
 	Use:   "generate <project-name> [destination]",
 	Short: "Génère une nouvelle structure de projet",
 	Long: `Génère une nouvelle structure de projet en fonction du nom du projet et de la destination.
@@ -33,42 +33,40 @@ Le projet généré sera basé sur un template minimaliste ou plus conséquent e
 }
 
 func init() {
-	rootCmd.AddCommand(generateCmd)
-
-	generateCmd.Flags().BoolVar(&lite, "lite", false, "Générer un projet minimaliste (Lite)")
-	generateCmd.Flags().BoolVar(&clean, "clean", false, "Générer un projet plus conséquent en avec tsoa (Clean)")
+	GenerateCmd.Flags().BoolVar(&lite, "lite", false, "Générer un projet minimaliste (Lite)")
+	GenerateCmd.Flags().BoolVar(&clean, "clean", false, "Générer un projet plus conséquent en avec tsoa (Clean)")
 }
 
 func runInteractive() {
 	var projectName, destination string
-	var projectType utils.ProjectType
+	var projectType typeutils.ProjectType
 
-	getInput(&survey.Input{
+	ui.GetInput(&survey.Input{
 		Message: "Nom du projet :",
 		Default: "api",
-	}, &projectName)
+	}, &projectName, survey.Required)
 
-	getInput(&survey.Select{
+	ui.GetInput(&survey.Select{
 		Message: "Type de structure :",
 		Options: []string{
 			"Lite - Node + Express/TypeScript",
 			"Clean - Node + Express/TypeScript + TSOA + Clean Architecture",
 		},
-	}, &projectType)
+	}, &projectType, survey.Required)
 
-	getInput(&survey.Input{
+	ui.GetInput(&survey.Input{
 		Message: "Emplacement du projet (défaut : ./) :",
 		Default: "./",
-	}, &destination)
+	}, &destination, survey.Required)
 
 	if projectType == "Lite - Node + Express/TypeScript" {
-		projectType = utils.LiteProjectType
+		projectType = typeutils.LiteProjectType
 	} else if projectType == "Clean - Node + Express/TypeScript + TSOA + Clean Architecture" {
-		projectType = utils.CleanProjectType
+		projectType = typeutils.CleanProjectType
 	}
 
 	if err := createProjectStructureByType(projectType, projectName, destination); err != nil {
-		fmt.Println(err)
+		logutils.Logger{}.Error(err)
 		return
 	}
 }
@@ -81,25 +79,19 @@ func runWithArguments(args []string) {
 		destination = args[1]
 	}
 
-	projectType := utils.LiteProjectType
+	projectType := typeutils.LiteProjectType
 
 	if clean {
-		projectType = utils.CleanProjectType
+		projectType = typeutils.CleanProjectType
 	}
 
 	if err := createProjectStructureByType(projectType, projectName, destination); err != nil {
-		utils.Ui{}.UiError(err)
+		logutils.Logger{}.Error(err)
 		return
 	}
 }
 
-func createProjectStructureByType(projectType utils.ProjectType, projectName, destination string) error {
-	return generator.GenerateStructure(projectType, projectName, destination)
-}
-
-func getInput(prompt survey.Prompt, response interface{}) {
-	if err := survey.AskOne(prompt, response); err != nil {
-		utils.Ui{}.UiError(fmt.Errorf("\n  interruption détectée. Fermeture...\n"))
-		os.Exit(1)
-	}
+func createProjectStructureByType(projectType typeutils.ProjectType, projectName, destination string) error {
+	projectManager := project.New(projectType, projectName, destination)
+	return projectManager.Generate()
 }

@@ -1,0 +1,18 @@
+import { Request, Response, NextFunction } from 'express';
+
+export const {{.ControllerFunc}} = async (
+  _: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    // TODO: Extract parameter(s) from req.params
+    // const { id } = req.params;
+
+    // TODO: Implement PATCH logic
+
+    res.json({});
+  } catch (error) {
+    next(error);
+  }
+};

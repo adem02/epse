@@ -1,10 +1,11 @@
-package utils
+package project
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
+
+	"github.com/adem02/epse/internal/utils/osutils"
+	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
 var NpmAPIUrl = "https://registry.npmjs.org"
@@ -15,35 +16,53 @@ type PackageInfo struct {
 	} `json:"dist-tags"`
 }
 
-var commonDependencies = DependencyMap{
-	Dependencies: {"cors", "dotenv", "express", "uuid", "pino", "pino-http"},
-	DevDependencies: {
+var commonDependencies = typeutils.DependencyMap{
+	typeutils.Dependencies: {"cors", "dotenv", "express", "uuid", "pino", "pino-http"},
+	typeutils.DevDependencies: {
 		"@eslint/js", "@types/cors", "@types/express", "@types/node", "@types/uuid",
 		"eslint", "pino-pretty", "prettier", "ts-node-dev", "tsconfig-paths",
 		"typescript", "typescript-eslint",
 	},
 }
 
-func cleanProjectDependencies() DependencyMap {
+func cleanProjectDependencies() typeutils.DependencyMap {
 	dependencies := []string{"reflect-metadata", "swagger-ui-express", "tsoa", "tsyringe"}
 	devDependencies := []string{
 		"@types/jest", "@types/supertest", "@types/swagger-ui-express",
 		"jest", "rimraf", "supertest", "ts-jest", "tsc-alias", "env-cmd",
 	}
 
-	return DependencyMap{
-		Dependencies:    append(dependencies, commonDependencies[Dependencies]...),
-		DevDependencies: append(devDependencies, commonDependencies[DevDependencies]...),
+	return typeutils.DependencyMap{
+		typeutils.Dependencies:    append(dependencies, commonDependencies[typeutils.Dependencies]...),
+		typeutils.DevDependencies: append(devDependencies, commonDependencies[typeutils.DevDependencies]...),
 	}
 }
 
-func liteProjectDependencies() DependencyMap {
-	dependencies := []string{"module-alias", "express-async-errors"}
+func liteProjectDependencies() typeutils.DependencyMap {
+	dependencies := []string{"module-alias"}
 	devDependencies := []string{}
-	return DependencyMap{
-		Dependencies:    append(dependencies, commonDependencies[Dependencies]...),
-		DevDependencies: append(devDependencies, commonDependencies[DevDependencies]...),
+
+	return typeutils.DependencyMap{
+		typeutils.Dependencies:    append(dependencies, commonDependencies[typeutils.Dependencies]...),
+		typeutils.DevDependencies: append(devDependencies, commonDependencies[typeutils.DevDependencies]...),
 	}
+}
+
+func getDependencyLts(dependency string, dependencyLst *string) error {
+	dependencyUrl := fmt.Sprintf("%s/%s", NpmAPIUrl, dependency)
+	res, err := http.Get(dependencyUrl)
+	if err != nil {
+		return err
+		// return nil // En cas de manque connectivité internet
+	}
+	defer res.Body.Close()
+
+	packageInfo := &PackageInfo{}
+	osutils.ParseJSONToStruct(res.Body, packageInfo)
+
+	*dependencyLst = fmt.Sprintf("^%s", packageInfo.DistTags.Latest)
+
+	return nil
 }
 
 func formatProjectDependencies(dependencies []string) (string, error) {
@@ -61,6 +80,7 @@ func formatProjectDependencies(dependencies []string) (string, error) {
 				errChans[index] <- err
 				return
 			}
+
 			dependencyResults[index] = dependencyLst
 			doneChans[index] <- true
 		}(i)
@@ -92,42 +112,15 @@ func formatProjectDependencies(dependencies []string) (string, error) {
 	return formattedDependencies, nil
 }
 
-func getDependencyLts(dependency string, dependencyLst *string) error {
-	dependencyUrl := fmt.Sprintf("%s/%s", NpmAPIUrl, dependency)
-	res, err := http.Get(dependencyUrl)
-	if err != nil {
-		return err
-	}
-	defer func(response *http.Response) {
-		if response.Body.Close(); err != nil {
-			panic(err)
-		}
-	}(res)
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	var packageInfo PackageInfo
-	if err := json.Unmarshal(body, &packageInfo); err != nil {
-		return err
-	}
-
-	*dependencyLst = fmt.Sprintf("^%s", packageInfo.DistTags.Latest)
-
-	return nil
-}
-
-func GetFormattedDependenciesByProjectType(projectType ProjectType) (FormattedDependencyMap, error) {
-	if projectType != LiteProjectType && projectType != CleanProjectType {
+func GetFormattedDependenciesByProjectType(projectType typeutils.ProjectType) (typeutils.FormattedDependencyMap, error) {
+	if projectType != typeutils.LiteProjectType && projectType != typeutils.CleanProjectType {
 		return nil, fmt.Errorf("invalid project type: %s", projectType)
 	}
 
-	formattedDependenciesMappedByProjectType := make(FormattedDependencyMap, 2)
+	formattedDependenciesMappedByProjectType := make(typeutils.FormattedDependencyMap, 2)
 
 	allDependencies := liteProjectDependencies()
-	if projectType == CleanProjectType {
+	if projectType == typeutils.CleanProjectType {
 		allDependencies = cleanProjectDependencies()
 	}
 

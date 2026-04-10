@@ -1,7 +1,8 @@
-package utils
+package logutils
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -11,25 +12,25 @@ var uiinfo = color.New(color.FgHiBlue).SprintFunc()
 var uisection = color.New(color.Bold, color.FgGreen).SprintFunc()
 var uierror = color.New(color.FgHiRed).SprintFunc()
 
-type Ui struct {
+type Logger struct {
 }
 
-func (ui Ui) UiSuccess(message string) {
+func (logger Logger) Success(message string) {
 	fmt.Println(uisuccess(message))
 }
 
-func (ui Ui) UiWarning(message string) {
+func (logger Logger) Warning(message string) {
 	fmt.Println(uiwarning(message))
 }
 
-func (ui Ui) UiInfo(message string) {
+func (logger Logger) Info(message string) {
 	fmt.Println(uiinfo(message))
 }
 
-func (ui Ui) UiError(err error) {
+func (logger Logger) Error(err error) {
 	fmt.Println(uierror(err))
 }
 
-func (ui Ui) UiSection(message string, arg any) {
+func (logger Logger) Section(message string, arg any) {
 	fmt.Printf("    %s: %s\n", uisection(message), uiinfo(arg))
 }

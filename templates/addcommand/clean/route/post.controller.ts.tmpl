@@ -1,0 +1,22 @@
+import { Controller, Post, Route, SuccessResponse, Body } from 'tsoa';
+import { injectable } from 'tsyringe';
+
+@Route('{{.RoutePrefix}}')
+@injectable()
+export class {{.ControllerFunctionName}} extends Controller {
+  constructor() {
+    super();
+  }
+
+  @Post('{{.RouteUrl}}')
+  @SuccessResponse(201, 'Created')
+  public async execute(
+    @Body() body?: any
+  ): Promise<void> {
+    // TODO: Implement POST logic
+    // NOTE: Body is optional. Remove '?' if required for creation endpoints.
+    // For action endpoints (e.g., /activate, /verify), body may not be needed.
+
+    this.setStatus(201);
+  }
+}

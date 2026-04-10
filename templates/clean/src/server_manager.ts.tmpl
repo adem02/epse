@@ -52,12 +52,12 @@ export class ServerManager {
 
   private handleProcessEvents(): void {
     process.on('uncaughtException', (err) => {
-      Logger.error('Uncaught Exception:', err);
+      Logger.error(err, 'Uncaught Exception:');
       process.exit(1);
     });
 
     process.on('unhandledRejection', (reason) => {
-      Logger.error('Unhandled Rejection:', reason);
+      Logger.error(reason as Error, 'Unhandled Rejection:');
       process.exit(1);
     });
   }
@@ -80,7 +80,7 @@ export class ServerManager {
     return new Promise<void>((resolve, reject) => {
       server.close((err) => {
         if (err) {
-          Logger.error('Failed to close server!', err);
+          Logger.error(err, 'Failed to close server!');
           reject(err);
         } else {
           Logger.info('Server closed successfully');

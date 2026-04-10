@@ -9,16 +9,14 @@ import (
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
-type ConfigManager struct {
-}
-
 type ConfigData struct {
-	ProjectName     string                `json:"projectName"`
-	ProjectType     string                `json:"projectType"`
-	ControllersPath string                `json:"controllersPath"`
-	Database        bool                  `json:"database"`
-	AuthMiddleware  bool                  `json:"auth"`
-	Routes          []typeutils.RouteData `json:"routes"`
+	ProjectName     string                           `json:"projectName"`
+	ProjectType     string                           `json:"projectType"`
+	ControllersPath string                           `json:"controllersPath"`
+	Database        bool                             `json:"database"`
+	AuthMiddleware  bool                             `json:"auth"`
+	Routes          []typeutils.RouteData            `json:"routes"`
+	Middlewares     []typeutils.CustomMiddlewareData `json:"customMiddlewares"`
 }
 
 var ConfigFilePath = filepath.Join(osutils.GetCurrentDirPath(), "epseconfig.json")
@@ -78,6 +76,16 @@ func AddNewRouteInConfigFile(domainName, routePrefix string, configData *ConfigD
 	return osutils.WriteJSONToFile(file, configData)
 }
 
-func NewConfigManager() *ConfigManager {
-	return &ConfigManager{}
+func AddNewMiddlewareInConfigFile(name string, configData *ConfigData) error {
+	configData.Middlewares = append(configData.Middlewares, typeutils.CustomMiddlewareData{
+		Name: name,
+	})
+
+	file, err := osutils.OpenFileWithWriteMode(ConfigFilePath, true)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return osutils.WriteJSONToFile(file, configData)
 }

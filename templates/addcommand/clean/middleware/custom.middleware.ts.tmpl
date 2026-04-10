@@ -1,0 +1,10 @@
+import { Request as Req, Response as ExpRes, NextFunction } from 'express';
+
+export async function {{.MiddlewareName}}Middleware(
+  _req: Req,
+  _res: ExpRes,
+  next: NextFunction
+): Promise<void> {
+  // TODO: Implement {{.MiddlewareName}} logic
+  next();
+}

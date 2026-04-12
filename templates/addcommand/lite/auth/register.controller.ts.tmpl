@@ -1,0 +1,31 @@
+import { Request, Response, NextFunction } from 'express';
+import { authService } from '@/services/auth.service';
+import { RegisterBody } from '@/types/auth.types';
+
+export const RegisterController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const body = req.body as RegisterBody;
+
+    // TODO: Validate body fields before proceeding
+    // ex: const validationError = validateRegisterBody(body);
+    // ex: if (validationError) {
+    //   res.status(400).json({ message: validationError });
+    //   return;
+    // }
+
+    const registerResponse = await authService.register(body);
+
+    if (!registerResponse) {
+      res.status(409).json({ message: 'User already exists' });
+      return;
+    }
+
+    res.status(201).json(registerResponse);
+  } catch (error) {
+    next(error);
+  }
+};

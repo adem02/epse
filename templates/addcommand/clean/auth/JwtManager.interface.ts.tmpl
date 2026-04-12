@@ -1,0 +1,10 @@
+import { JwtPayload } from '../../entities/types/auth.types';
+
+export interface JwtSignOptions {
+  expiresIn: string;
+}
+
+export interface JwtManagerInterface {
+  encode(payload: JwtPayload, options: JwtSignOptions): Promise<string>;
+  verify(token: string): Promise<JwtPayload | undefined>;
+}

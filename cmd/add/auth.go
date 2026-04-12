@@ -1,0 +1,55 @@
+/*
+Copyright © 2026 NAME HERE <EMAIL ADDRESS>
+*/
+package add
+
+import (
+	"fmt"
+
+	"github.com/adem02/epse/internal/auth"
+	"github.com/adem02/epse/internal/config"
+	"github.com/adem02/epse/internal/utils/logutils"
+	"github.com/adem02/epse/internal/utils/osutils"
+	"github.com/adem02/epse/internal/utils/typeutils"
+	"github.com/spf13/cobra"
+)
+
+var authCmd = &cobra.Command{
+	Use:   "auth",
+	Short: "Generate a complete JWT authentication system",
+	Long: `Generate a complete JWT authentication system for your Express/TypeScript project.
+
+Supported strategies:
+  Lite  - Generates JWT auth with login, register, middleware and routes
+  Clean - Generates JWT auth with login, register, use cases, controllers, gateway and TSOA authentication
+
+Usage:
+  epse add auth`,
+	Run: func(cmd *cobra.Command, args []string) {
+		projectPath := osutils.GetCurrentDirPath()
+		if !config.ConfigFileExists(projectPath) {
+			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
+			return
+		}
+
+		if err := runAddAuth(); err != nil {
+			logutils.Logger{}.Error(err)
+		}
+	},
+}
+
+func init() {
+	AddCmd.AddCommand(authCmd)
+}
+
+func runAddAuth() error {
+	configData, err := config.ReadConfigFileData()
+	if err != nil {
+		return err
+	}
+
+	projectType := typeutils.ProjectType(configData.ProjectType)
+	authManager := auth.NewAuthManager(projectType)
+
+	return authManager.AddAuth()
+}

@@ -14,7 +14,7 @@ type ConfigData struct {
 	ProjectType     string                           `json:"projectType"`
 	ControllersPath string                           `json:"controllersPath"`
 	Database        bool                             `json:"database"`
-	AuthMiddleware  bool                             `json:"auth"`
+	Auth            bool                             `json:"auth"`
 	Routes          []typeutils.RouteData            `json:"routes"`
 	Middlewares     []typeutils.CustomMiddlewareData `json:"customMiddlewares"`
 }
@@ -80,6 +80,18 @@ func AddNewMiddlewareInConfigFile(name string, configData *ConfigData) error {
 	configData.Middlewares = append(configData.Middlewares, typeutils.CustomMiddlewareData{
 		Name: name,
 	})
+
+	file, err := osutils.OpenFileWithWriteMode(ConfigFilePath, true)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return osutils.WriteJSONToFile(file, configData)
+}
+
+func SetAuthInConfigFile(configData *ConfigData) error {
+	configData.Auth = true
 
 	file, err := osutils.OpenFileWithWriteMode(ConfigFilePath, true)
 	if err != nil {

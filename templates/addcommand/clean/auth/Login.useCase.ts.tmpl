@@ -1,0 +1,37 @@
+import { injectable, inject } from 'tsyringe';
+import { JwtManagerToken } from '../../../utilities/di.constants';
+import { JwtManagerInterface, JwtSignOptions } from '../../gateway/JwtManager.interface';
+import { JwtPayload } from '../../../entities/types/auth.types';
+import { LoginRequest } from './Login.request';
+import { LoginResponse } from './Login.response';
+
+@injectable()
+export class LoginUseCase {
+  constructor(
+    @inject(JwtManagerToken) private readonly jwtManager: JwtManagerInterface,
+  ) {}
+
+  async execute(_request: LoginRequest): Promise<LoginResponse> {
+    // TODO: Verify credentials against your data source
+    // TODO: Return error if invalid credentials
+    // ex: const user = await this.userRepository.findByEmail(request.email);
+    // ex: if (!user) throw new ApiError(ApiErrorCode.Unauthorized, 'auth/invalid-credentials', 'Invalid credentials');
+
+    const payload: JwtPayload = {
+      // TODO: Fill with your user data
+      // ex: userUuid: user.uuid,
+    };
+
+    const options: JwtSignOptions = {
+      expiresIn: '24h',
+    };
+
+    const accessToken = await this.jwtManager.encode(payload, options);
+
+    return {
+      // TODO: Fill with your response data
+      // ex: user: { uuid: user.uuid, email: user.email },
+      accessToken,
+    };
+  }
+}

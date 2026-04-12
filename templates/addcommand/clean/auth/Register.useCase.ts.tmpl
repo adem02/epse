@@ -1,0 +1,43 @@
+import { injectable, inject } from 'tsyringe';
+import { JwtManagerToken } from '../../../utilities/di.constants';
+import { JwtManagerInterface, JwtSignOptions } from '../../gateway/JwtManager.interface';
+import { JwtPayload } from '../../../entities/types/auth.types';
+import { RegisterRequest } from './Register.request';
+import { RegisterResponse } from './Register.response';
+
+@injectable()
+export class RegisterUseCase {
+  constructor(
+    @inject(JwtManagerToken) private readonly jwtManager: JwtManagerInterface,
+  ) {}
+
+  async execute(_request: RegisterRequest): Promise<RegisterResponse> {
+    // TODO: Check if user already exists in your data source
+    // TODO: Return error if already exists
+    // ex: const existing = await this.userRepository.findByEmail(request.email);
+    // ex: if (existing) throw new ApiError(ApiErrorCode.Unauthorized, 'auth/email-already-exists', 'Email already exists');
+
+    // TODO: Hash password before storing
+    // ex: const hashedPassword = await this.passwordManager.hash(request.password);
+
+    // TODO: Save user to your data source
+    // ex: const newUser = await this.userRepository.create({ ...request, password: hashedPassword });
+
+    const payload: JwtPayload = {
+      // TODO: Fill with your user data
+      // ex: userUuid: newUser.uuid,
+    };
+
+    const options: JwtSignOptions = {
+      expiresIn: '24h',
+    };
+
+    const accessToken = await this.jwtManager.encode(payload, options);
+
+    return {
+      // TODO: Fill with your response data
+      // ex: user: { uuid: newUser.uuid, email: newUser.email },
+      accessToken,
+    };
+  }
+}

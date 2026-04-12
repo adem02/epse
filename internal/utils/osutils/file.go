@@ -75,3 +75,18 @@ func ParseJSONToStruct(reader io.Reader, data interface{}) error {
 
 	return json.NewDecoder(reader).Decode(data)
 }
+
+func AppendToFile(path, content string) error {
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return fmt.Errorf("❌ failed to open file for appending: %s", path)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprint(file, content)
+	if err != nil {
+		return fmt.Errorf("❌ failed to append to file: %s", path)
+	}
+
+	return nil
+}

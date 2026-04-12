@@ -1,0 +1,40 @@
+import jwt, { SignOptions } from 'jsonwebtoken';
+import { injectable } from 'tsyringe';
+import { JwtPayload } from '../../entities/types/auth.types';
+import { JwtManagerInterface, JwtSignOptions } from '../../useCases/gateway/JwtManager.interface';
+import { JwtConfig } from '../../config/jwt.config';
+
+@injectable()
+export class JwtManager implements JwtManagerInterface {
+  async encode(payload: JwtPayload, options: JwtSignOptions): Promise<string> {
+    const secret = JwtConfig.secret as jwt.Secret;
+    const signOptions: SignOptions = {
+      expiresIn: options.expiresIn as SignOptions['expiresIn'],
+      algorithm: 'HS256',
+    };
+
+    return new Promise((resolve, reject) => {
+      jwt.sign(payload, secret, signOptions, (err: Error | null, token: string | undefined) => {
+        if (err || !token) {
+          reject(err);
+        } else {
+          resolve(token);
+        }
+      });
+    });
+  }
+
+  async verify(token: string): Promise<JwtPayload | undefined> {
+    const secret = JwtConfig.secret as jwt.Secret;
+
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, secret, { algorithms: ['HS256'] }, (err: jwt.VerifyErrors | null, decoded: jwt.JwtPayload | string | undefined) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(decoded as JwtPayload);
+        }
+      });
+    });
+  }
+}

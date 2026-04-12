@@ -1,0 +1,24 @@
+import { Request, Response, NextFunction } from 'express';
+import { authService } from '@/services/auth.service';
+import { LoginBody } from '@/types/auth.types';
+
+export const LoginController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const body = req.body as LoginBody;
+
+    const authResult = await authService.login(body);
+
+    if (!authResult) {
+      res.status(401).json({ message: 'Invalid credentials' });
+      return;
+    }
+
+    res.status(200).json(authResult);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,0 +1,42 @@
+import { signToken } from '@/services/jwt.service';
+import { LoginBody, RegisterBody, JwtPayload } from '@/types/auth.types';
+
+export class AuthService {
+  async login(
+    credentials: LoginBody
+  ): Promise<{ token: string; user: JwtPayload } | null> {
+    // TODO: Verify credentials against your data source
+    // TODO: Return null if invalid
+    // ex: const user = await UserRepository.findByEmail(credentials.email);
+    // ex: if (!user) return null;
+    // ex: const isValid = await bcrypt.compare(credentials.password, user.password);
+    // ex: if (!isValid) return null;
+
+    const payload = credentials as unknown as JwtPayload;
+    const token = signToken(payload);
+
+    return { token, user: payload };
+  }
+
+  async register(
+    data: RegisterBody
+  ): Promise<{ token: string; user: JwtPayload } | null> {
+    // TODO: Check if user already exists in your data source
+    // TODO: Return null if already exists
+    // ex: const existing = await UserRepository.findByEmail(data.email);
+    // ex: if (existing) return null;
+
+    // TODO: Hash password before storing
+    // ex: const hashed = await bcrypt.hash(data.password, 10);
+
+    // TODO: Save user to your data source
+    // ex: const user = await UserRepository.create({ ...data, password: hashed });
+
+    const payload = data as unknown as JwtPayload;
+    const token = signToken(payload);
+
+    return { token, user: payload };
+  }
+}
+
+export const authService = new AuthService();

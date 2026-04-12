@@ -1,0 +1,17 @@
+export class LoginInputDto {
+  // TODO: Add your login fields
+  // ex: email: string;
+  // ex: password: string;
+}
+
+export class LoginOutputDto {
+  accessToken: string;
+
+  // TODO: Add the user fields you want to return
+  // ex: userUuid: string;
+  // ex: roles?: string[];
+
+  constructor(data: { accessToken: string }) {
+    this.accessToken = data.accessToken;
+  }
+}

@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/adem02/epse/internal/common"
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
@@ -75,9 +76,9 @@ func (lrs *LiteRouteStrategy) AddRoute(
 	newRoute := fmt.Sprintf(`router.%s('%s', %s);`, strings.ToLower(method), routeUrl, controllerNames.FunctionName)
 	importStatement := fmt.Sprintf(`import { %s } from '@/controllers/%s/%s';`, controllerNames.FunctionName, domainName, controllerNames.FileNameImportPath)
 
-	AddImportStatementInFile(&content, importStatement)
+	common.AddImportStatementInFile(&content, importStatement)
 	if !strings.Contains(content, newRoute) {
-		InsertContentBeforeStatementInFile(&content, "export default router;", newRoute)
+		common.InsertContentBeforeStatementInFile(&content, "export default router;", newRoute)
 	}
 
 	if err := os.WriteFile(routeFilePath, []byte(content), 0644); err != nil {
@@ -103,9 +104,9 @@ func updateIndexRouteFile(domainName, prefix string) error {
 	importStatement := fmt.Sprintf(`import %s from './%s.routes';`, routeVarName, domainName)
 	newRouteUse := fmt.Sprintf("router.use('/%s', %s);", prefix, routeVarName)
 
-	AddImportStatementInFile(&content, importStatement)
+	common.AddImportStatementInFile(&content, importStatement)
 	if !strings.Contains(content, newRouteUse) {
-		InsertContentBeforeStatementInFile(&content, "export default router;", newRouteUse)
+		common.InsertContentBeforeStatementInFile(&content, "export default router;", newRouteUse)
 	}
 
 	if err := os.WriteFile(indexFilePath, []byte(content), 0644); err != nil {

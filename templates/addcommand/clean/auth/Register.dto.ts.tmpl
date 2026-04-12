@@ -1,0 +1,18 @@
+export class RegisterInputDto {
+  // TODO: Add your registration fields
+  // ex: username: string;
+  // ex: email: string;
+  // ex: password: string;
+}
+
+export class RegisterOutputDto {
+  accessToken: string;
+
+  // TODO: Add the user fields you want to return
+  // ex: userUuid: string;
+  // ex: username: string;
+
+  constructor(data: { accessToken: string }) {
+    this.accessToken = data.accessToken;
+  }
+}

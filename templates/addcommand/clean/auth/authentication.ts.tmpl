@@ -1,0 +1,70 @@
+import { Request } from 'express';
+import { container } from 'tsyringe';
+import { ApiError, ApiErrorCode } from '../../entities/error';
+import { JwtManagerInterface } from '../../useCases/gateway/JwtManager.interface';
+import { JwtManagerToken } from '../../utilities/di.constants';
+
+export const expressAuthentication = async (
+  request: Request,
+  securityName: string,
+  scopes?: string[],
+): Promise<any> => {
+  if (securityName === 'jwt') {
+    const token = request.headers['authorization'];
+
+    if (!token || !token.startsWith('Bearer ')) {
+      throw new ApiError(
+        ApiErrorCode.Unauthorized,
+        'auth/missing-header',
+        'Missing or incorrect authorization header',
+      );
+    }
+
+    const jwtToken = token.split(' ')[1];
+    const jwtManager = container.resolve<JwtManagerInterface>(JwtManagerToken);
+
+    return new Promise((resolve, reject) => {
+      jwtManager
+        .verify(jwtToken)
+        .then((decoded) => {
+          if (!decoded) {
+            throw new ApiError(
+              ApiErrorCode.Unauthorized,
+              'auth/invalid-token',
+              'Invalid token',
+            );
+          }
+
+          if (scopes && scopes.length > 0) {
+            const decodedPayload = decoded as Record<string, unknown>;
+            const roles = Array.isArray(decodedPayload.roles) ? decodedPayload.roles as string[] : undefined;
+
+            if (!roles || !scopes.some(scope => roles.includes(scope))) {
+              throw new ApiError(
+                ApiErrorCode.Forbidden,
+                'auth/insufficient-role',
+                'Insufficient role',
+              );
+            }
+          }
+
+          resolve(decoded);
+        })
+        .catch((_err) => {
+          reject(
+            new ApiError(
+              ApiErrorCode.Unauthorized,
+              'auth/token-expired-or-invalid',
+              'Token expired or invalid',
+            ),
+          );
+        });
+    });
+  }
+
+  throw new ApiError(
+    ApiErrorCode.Unauthorized,
+    'auth/invalid-security-name',
+    'Invalid security name',
+  );
+};

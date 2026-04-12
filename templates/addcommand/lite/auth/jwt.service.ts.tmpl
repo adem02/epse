@@ -1,0 +1,26 @@
+import jwt, { SignOptions } from 'jsonwebtoken';
+import { Request } from 'express';
+import { JwtConfig } from '@/config/jwt.config';
+import { JwtPayload } from '@/types/auth.types';
+
+export const signToken = (payload: JwtPayload): string => {
+  const secret = JwtConfig.secret as jwt.Secret;
+  const options: SignOptions = {
+    expiresIn: JwtConfig.expiresIn as SignOptions['expiresIn'],
+  };
+  return jwt.sign(payload, secret, options);
+};
+
+export const verifyToken = (token: string): JwtPayload | null => {
+  try {
+    return jwt.verify(token, JwtConfig.secret as jwt.Secret) as JwtPayload;
+  } catch {
+    return null;
+  }
+};
+
+// NOTE: Use this helper in your controllers to get the authenticated user
+// Make sure JwtPayload matches what you store in signToken()
+export const getAuthUser = (req: Request): JwtPayload => {
+  return req.user as JwtPayload;
+};

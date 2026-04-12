@@ -1,0 +1,23 @@
+import { Body, Controller, Post, Route, Tags, SuccessResponse } from 'tsoa';
+import { injectable } from 'tsyringe';
+import { LoginUseCase } from '../../../../useCases/auth/login/Login.useCase';
+import { LoginInputDto, LoginOutputDto } from './Login.dto';
+
+@Route('auth/login')
+@Tags('Authentication')
+@injectable()
+export class LoginController extends Controller {
+  constructor(private readonly useCase: LoginUseCase) {
+    super();
+  }
+
+  @Post()
+  @SuccessResponse('200', 'User logged in successfully')
+  async login(@Body() body: LoginInputDto): Promise<LoginOutputDto> {
+    // TODO: Validate body before proceeding
+    // ex: await Validator.validate({ data: body, validationClass: LoginInputDto });
+
+    const loginResponse = await this.useCase.execute(body);
+    return new LoginOutputDto(loginResponse);
+  }
+}

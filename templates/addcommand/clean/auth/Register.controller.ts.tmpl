@@ -1,0 +1,23 @@
+import { Body, Controller, Post, Tags, Route, SuccessResponse } from 'tsoa';
+import { injectable } from 'tsyringe';
+import { RegisterUseCase } from '../../../../useCases/auth/register/Register.useCase';
+import { RegisterInputDto, RegisterOutputDto } from './Register.dto';
+
+@Route('auth/register')
+@Tags('Authentication')
+@injectable()
+export class RegisterController extends Controller {
+  constructor(private readonly useCase: RegisterUseCase) {
+    super();
+  }
+
+  @Post()
+  @SuccessResponse('201', 'User registered successfully')
+  async register(@Body() body: RegisterInputDto): Promise<RegisterOutputDto> {
+    // TODO: Validate body before proceeding
+    // ex: await Validator.validate({ data: body, validationClass: RegisterInputDto });
+
+    const registerResponse = await this.useCase.execute(body);
+    return new RegisterOutputDto(registerResponse);
+  }
+}

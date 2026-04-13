@@ -15,6 +15,37 @@ Both architectures are supported across all commands.
 
 ---
 
+## Installation
+
+### Quick Install (macOS / Linux)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/adem02/epse/main/install.sh | bash
+```
+
+The script automatically detects your OS and architecture, downloads the correct binary and installs it to `/usr/local/bin`.
+
+### Manual Install
+
+Download the latest binary for your platform from the [GitHub Releases](https://github.com/adem02/epse/releases/latest) page, then move it to your PATH manually.
+
+### Build from source
+
+```bash
+git clone https://github.com/adem02/epse.git
+cd epse
+go build -o epse .
+mv epse /usr/local/bin/epse
+```
+
+### Verify installation
+
+```bash
+epse --help
+```
+
+---
+
 ## Commands
 
 ### generate

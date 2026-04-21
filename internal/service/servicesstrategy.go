@@ -3,7 +3,7 @@ package service
 import "github.com/adem02/epse/internal/utils/typeutils"
 
 type ServiceStrategy interface {
-	AddService(name string) (bool, error)
+	AddService(names ServiceNames) (bool, error)
 }
 
 func GetServiceStrategy(projectType typeutils.ProjectType) ServiceStrategy {

@@ -17,8 +17,6 @@ func (crs *CleanRouteStrategy) AddRoute(
 	domainName string,
 	completeRouteUrl string,
 	method string,
-	authMiddleware,
-	adminAuthMiddleware bool,
 ) error {
 	controllerDir := GetControllerDirectoryPathByType(filepath.Join(domainName, controllerNames.CleanName), typeutils.CleanProjectType)
 	controllerFilePath := filepath.Join(controllerDir, controllerNames.FileName)

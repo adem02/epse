@@ -12,7 +12,6 @@ import (
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/route"
 	"github.com/adem02/epse/internal/utils/logutils"
-	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/ui"
 	"github.com/spf13/cobra"
 )
@@ -33,19 +32,17 @@ var RouteCmd = &cobra.Command{
 	Short: "Will generate required files for a give route path",
 	Long:  `API route, you must provide details the module name, the path, controller name`,
 	Run: func(cmd *cobra.Command, args []string) {
-		projectPath := osutils.GetCurrentDirPath()
-		if !config.ConfigFileExists(projectPath) {
+		if !config.ConfigFileExists() {
 			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
 			return
 		}
 
 		if len(args) < 1 {
-			handleAddRouteInteractively(projectPath)
+			handleAddRouteInteractively()
 			return
 		}
 
 		handleAddRouteWithArguments(args)
-
 	},
 }
 
@@ -60,7 +57,7 @@ func init() {
 	RouteCmd.Flags().BoolVar(&crud, "crud", false, "Generate complete CRUD routes (GET, POST, PUT, DELETE)")
 }
 
-func handleAddRouteInteractively(configFile string) {
+func handleAddRouteInteractively() {
 	var domainName, routePath, controllerName, actionMethod string
 
 	ui.GetInput(&survey.Input{
@@ -80,7 +77,7 @@ func handleAddRouteInteractively(configFile string) {
 	var useCrud bool
 	survey.AskOne(&survey.Confirm{
 		Message: "Generate complete CRUD routes? (GET all, GET by id, POST, PUT, DELETE)",
-		Default: false,
+		Default: true,
 	}, &useCrud)
 
 	if useCrud {
@@ -150,6 +147,11 @@ func handleAddRouteInteractively(configFile string) {
 }
 
 func handleAddRouteWithArguments(args []string) {
+	if len(args) < 2 {
+		logutils.Logger{}.Error(fmt.Errorf("❌ You need to specify both domain and route path.\nUsage: epse add route <domain> <routePath> [flags]\nExample: epse add route user /users/:id --controller=DeleteUserById --method=DELETE"))
+		return
+	}
+
 	domainName := args[0]
 	routePath := args[1]
 

@@ -3,7 +3,7 @@ package repository
 import "github.com/adem02/epse/internal/utils/typeutils"
 
 type RepositoryStrategy interface {
-	AddRepository(name string) (bool, error)
+	AddRepository(names RepositoryNames) (bool, error)
 }
 
 func GetRepositoryStrategy(projectType typeutils.ProjectType) RepositoryStrategy {

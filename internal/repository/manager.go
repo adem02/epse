@@ -8,23 +8,31 @@ import (
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
+type RepositoryNames struct {
+	CleanName                string
+	LiteFileName             string
+	LiteFileNameImportPath   string
+	InterfaceFileName        string
+	InterfaceImportPath      string
+	ImplementationFileName   string
+	ImplementationImportPath string
+}
+
 type RepositoryManager struct {
-	Name        string
+	Names       RepositoryNames
 	ProjectType typeutils.ProjectType
 }
 
-func NewRepositoryManager(name string, projectType typeutils.ProjectType) *RepositoryManager {
+func NewRepositoryManager(names RepositoryNames, projectType typeutils.ProjectType) *RepositoryManager {
 	return &RepositoryManager{
-		Name:        name,
+		Names:       names,
 		ProjectType: projectType,
 	}
 }
 
 func (rm *RepositoryManager) AddRepository() error {
-	rm.Name = CleanRepositoryName(rm.Name)
-
 	strategy := GetRepositoryStrategy(rm.ProjectType)
-	created, err := strategy.AddRepository(rm.Name)
+	created, err := strategy.AddRepository(rm.Names)
 	if err != nil {
 		return err
 	}
@@ -43,10 +51,10 @@ func (rm *RepositoryManager) displaySuccess() {
 	logutils.Logger{}.Info("📁 Files:")
 
 	if rm.ProjectType == typeutils.LiteProjectType {
-		fmt.Printf("  ✓ src/repositories/%s.repository.ts\n", strings.ToLower(rm.Name))
+		fmt.Printf("  ✓ src/repositories/%s\n", strings.ToLower(rm.Names.LiteFileName))
 	} else {
-		fmt.Printf("  ✓ src/useCases/gateway/%s.repository.interface.ts\n", Capitalize(rm.Name))
-		fmt.Printf("  ✓ src/adapters/gateway/%s.repository.ts\n", Capitalize(rm.Name))
+		fmt.Printf("  ✓ src/useCases/gateway/%s\n", Capitalize(rm.Names.InterfaceFileName))
+		fmt.Printf("  ✓ src/adapters/gateway/%s\n", Capitalize(rm.Names.ImplementationFileName))
 	}
 
 	fmt.Println()

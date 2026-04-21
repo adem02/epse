@@ -9,7 +9,6 @@ import (
 	"github.com/adem02/epse/internal/auth"
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/utils/logutils"
-	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
 	"github.com/spf13/cobra"
 )
@@ -26,8 +25,7 @@ Supported strategies:
 Usage:
   epse add auth`,
 	Run: func(cmd *cobra.Command, args []string) {
-		projectPath := osutils.GetCurrentDirPath()
-		if !config.ConfigFileExists(projectPath) {
+		if !config.ConfigFileExists() {
 			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
 			return
 		}

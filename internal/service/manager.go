@@ -8,23 +8,28 @@ import (
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
+type ServiceNames struct {
+	CleanName          string
+	FileName           string
+	FileNameImportPath string
+	FunctionName       string
+}
+
 type ServiceManager struct {
-	Name        string
+	Names       ServiceNames
 	ProjectType typeutils.ProjectType
 }
 
-func NewServiceManager(name string, projectType typeutils.ProjectType) *ServiceManager {
+func NewServiceManager(names ServiceNames, projectType typeutils.ProjectType) *ServiceManager {
 	return &ServiceManager{
-		Name:        name,
+		Names:       names,
 		ProjectType: projectType,
 	}
 }
 
 func (sm *ServiceManager) AddService() error {
-	sm.Name = CleanServiceName(sm.Name)
-
 	strategy := GetServiceStrategy(sm.ProjectType)
-	created, err := strategy.AddService(sm.Name)
+	created, err := strategy.AddService(sm.Names)
 	if err != nil {
 		return err
 	}
@@ -43,9 +48,9 @@ func (sm *ServiceManager) displaySuccess() {
 	logutils.Logger{}.Info("📁 Files:")
 
 	if sm.ProjectType == typeutils.LiteProjectType {
-		fmt.Printf("  ✓ src/services/%s.service.ts\n", strings.ToLower(sm.Name))
+		fmt.Printf("  ✓ src/services/%s\n", strings.ToLower(sm.Names.FileName))
 	} else {
-		fmt.Printf("  ✓ src/adapters/services/%s.service.ts\n", Capitalize(sm.Name))
+		fmt.Printf("  ✓ src/adapters/services/%s\n", Capitalize(sm.Names.FileName))
 	}
 
 	fmt.Println()

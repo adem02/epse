@@ -11,7 +11,6 @@ import (
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/repository"
 	"github.com/adem02/epse/internal/utils/logutils"
-	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
 	"github.com/adem02/epse/internal/utils/ui"
 	"github.com/spf13/cobra"
@@ -30,8 +29,7 @@ Supported strategies:
 Usage:
   epse add repository <name>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		projectPath := osutils.GetCurrentDirPath()
-		if !config.ConfigFileExists(projectPath) {
+		if !config.ConfigFileExists() {
 			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
 			return
 		}
@@ -64,6 +62,11 @@ func handleAddRepositoryInteractively() {
 
 	name = strings.TrimSpace(name)
 
+	if len(name) < 2 {
+		logutils.Logger{}.Error(fmt.Errorf("repository name must have at least 2 characters"))
+		return
+	}
+
 	fmt.Println("\n✅ Configuration Summary:")
 	fmt.Println("🔹 Repository Name:", name)
 
@@ -91,6 +94,20 @@ func handleAddRepositoryWithArguments(args []string) {
 		return
 	}
 
+	fmt.Println("\n✅ Configuration Summary:")
+	fmt.Println("🔹 Repository Name:", name)
+
+	var confirm bool
+	survey.AskOne(&survey.Confirm{
+		Message: "Do you want to proceed?",
+		Default: true,
+	}, &confirm)
+
+	if !confirm {
+		fmt.Println("❌ Operation canceled.")
+		return
+	}
+
 	if err := runAddRepository(name); err != nil {
 		logutils.Logger{}.Error(err)
 	}
@@ -103,7 +120,8 @@ func runAddRepository(name string) error {
 	}
 
 	projectType := typeutils.ProjectType(configData.ProjectType)
-	repositoryManager := repository.NewRepositoryManager(name, projectType)
+	names := repository.GenerateRepositoryNamesByType(name, projectType)
+	repositoryManager := repository.NewRepositoryManager(names, projectType)
 
 	return repositoryManager.AddRepository()
 }

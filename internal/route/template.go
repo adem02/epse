@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/adem02/epse/internal/templates"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
@@ -49,8 +50,6 @@ func CreateControllerFileFromTmpl(
 
 	templateName := GetControllerTemplateByMethod(method, hasParam)
 	templatePath := filepath.Join(
-		osutils.GetCliRootPath(),
-		"templates",
 		"addcommand",
 		string(projectType),
 		"route",
@@ -58,6 +57,7 @@ func CreateControllerFileFromTmpl(
 	)
 
 	return osutils.CreateFileFromTmpl(
+		templates.FS,
 		templatePath,
 		controllerFilePath,
 		data,

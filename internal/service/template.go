@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/adem02/epse/internal/templates"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
@@ -24,5 +25,5 @@ func CreateServiceFileFromTmpl(projectType typeutils.ProjectType, name, destPath
 		ServiceName: Capitalize(name),
 	}
 
-	return true, osutils.CreateFileFromTmpl(tmplPath, destPath, data)
+	return true, osutils.CreateFileFromTmpl(templates.FS, tmplPath, destPath, data)
 }

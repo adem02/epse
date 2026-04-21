@@ -1,7 +1,6 @@
 package project
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/adem02/epse/internal/templates"
@@ -18,8 +17,6 @@ func CreateProjectFilesFromTemplate(basePath string, projectType typeutils.Proje
 	}
 
 	for fileName, tmplFilePath := range projectStructure {
-		fmt.Printf("🔍 File: %s → Template: %s\n", fileName, tmplFilePath) // ← DEBUG
-
 		filePath := filepath.Join(basePath, fileName)
 		if err := osutils.CreateFileFromTmpl(templates.FS, tmplFilePath, filePath, &tmplData); err != nil {
 			return err

@@ -6,6 +6,7 @@ package add
 import (
 	"fmt"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/adem02/epse/internal/auth"
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/utils/logutils"
@@ -47,6 +48,22 @@ func runAddAuth() error {
 	}
 
 	projectType := typeutils.ProjectType(configData.ProjectType)
+
+	fmt.Println("\n✅ Configuration Summary:")
+	fmt.Println("🔹 Feature: JWT Authentication")
+	fmt.Println("🔹 Project Type:", projectType)
+
+	var confirm bool
+	survey.AskOne(&survey.Confirm{
+		Message: "Do you want to proceed with this configuration?",
+		Default: true,
+	}, &confirm)
+
+	if !confirm {
+		fmt.Println("❌ Operation canceled.")
+		return nil
+	}
+
 	authManager := auth.NewAuthManager(projectType)
 
 	return authManager.AddAuth()

@@ -53,9 +53,8 @@ epse --help
 Generates a new project structure.
 
 ```bash
-epse generate <project-name> [destination]
-epse generate <project-name> --lite [destination]
-epse generate <project-name> --clean [destination]
+epse generate <project-name> [destination] --lite
+epse generate <project-name>  [destination] --clean
 ```
 
 ### add route
@@ -63,7 +62,7 @@ epse generate <project-name> --clean [destination]
 Generates a controller and registers the route.
 
 ```bash
-epse add route <domain> <route-url> --method <HTTP_METHOD> --controller <name>
+epse add route <domain> <route-url> --method=<HTTP_METHOD> --controller=<name>
 epse add route <domain> <route-url> --crud
 ```
 

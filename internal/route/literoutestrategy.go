@@ -18,8 +18,6 @@ func (lrs *LiteRouteStrategy) AddRoute(
 	domainName string,
 	completeRouteUrl string,
 	method string,
-	authMiddleware,
-	adminAuthMiddleware bool,
 ) error {
 	controllerDir := GetControllerDirectoryPathByType(domainName, typeutils.LiteProjectType)
 	controllerFilePath := filepath.Join(controllerDir, controllerNames.FileName)
@@ -89,7 +87,7 @@ func (lrs *LiteRouteStrategy) AddRoute(
 }
 
 func updateIndexRouteFile(domainName, prefix string) error {
-	indexFilePath := GetLiteRouteIndexFilePath(domainName)
+	indexFilePath := GetLiteRouteIndexFilePath()
 	bytes, err := os.ReadFile(indexFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {

@@ -3,7 +3,6 @@ package osutils
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/adem02/epse/internal/utils/logutils"
 )
@@ -28,15 +27,6 @@ func CreateDirectory(path string) error {
 	}
 
 	return nil
-}
-
-func GetCliRootPath() string {
-	execPath, err := os.Executable()
-	if err != nil {
-		logutils.Logger{}.Error(fmt.Errorf("unable to get cli project path"))
-		panic(err)
-	}
-	return filepath.Dir(execPath)
 }
 
 func FileOrDirectoryExists(path string) bool {

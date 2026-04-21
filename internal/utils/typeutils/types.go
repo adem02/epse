@@ -6,8 +6,8 @@ type DependencyMap map[DependencyType][]string
 type FormattedDependencyMap map[DependencyType]string
 
 const (
-	GetLiteTemplatesPath  string         = "templates/lite"
-	GetCleanTemplatesPath string         = "templates/clean"
+	GetLiteTemplatesPath  string         = "lite"
+	GetCleanTemplatesPath string         = "clean"
 	LiteProjectType       ProjectType    = "lite"
 	CleanProjectType      ProjectType    = "clean"
 	SrcPath               string         = "src/"
@@ -31,7 +31,7 @@ var ControllersPathMappedByProjectType = map[ProjectType]string{
 }
 
 type RouteData struct {
-	Domaine       string `json:"domaine"`
+	Domaine       string `json:"domain"`
 	RouteBasePath string `json:"routeBasePath"`
 }
 

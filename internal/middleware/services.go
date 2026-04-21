@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"path/filepath"
+	"strings"
 
-	"github.com/adem02/epse/internal/utils/osutils"
+	"github.com/adem02/epse/internal/common"
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
@@ -21,13 +22,64 @@ func GetMiddlewareFileName(name string) string {
 }
 
 func GetMiddlewareTemplateFilePath(projectType typeutils.ProjectType) string {
-	return filepath.Join(osutils.GetCliRootPath(), "templates", "addcommand", string(projectType), "middleware", "custom.middleware.ts.tmpl")
+	return filepath.Join("addcommand", string(projectType), "middleware", "custom.middleware.ts.tmpl")
 }
 
-func GetMiddlewareDirectoryPath(projectType typeutils.ProjectType) string {
-	projectPath := osutils.GetCurrentDirPath()
+func GetMiddlewareDirectoryPathByType(projectType typeutils.ProjectType) string {
 	if projectType == typeutils.LiteProjectType {
-		return filepath.Join(projectPath, "src", "middlewares")
+		return common.GetFileOrDirectoryPathFromSrcPath("middlewares")
 	}
-	return filepath.Join(projectPath, "src", "adapters", "middlewares")
+	return common.GetFileOrDirectoryPathFromSrcPath("adapters", "middlewares")
+}
+
+func normalizeMiddlewareWords(input string) []string {
+	s := strings.TrimSpace(input)
+	if s == "" {
+		return nil
+	}
+
+	lower := strings.ToLower(s)
+
+	if strings.HasSuffix(lower, ".middleware.ts") {
+		s = s[:len(s)-len(".middleware.ts")]
+	} else if strings.HasSuffix(lower, ".ts") {
+		s = s[:len(s)-len(".ts")]
+	}
+
+	lower = strings.ToLower(s)
+
+	if strings.HasSuffix(lower, "-middleware") {
+		s = s[:len(s)-len("-middleware")]
+	} else if strings.HasSuffix(lower, "_middleware") {
+		s = s[:len(s)-len("_middleware")]
+	} else if strings.HasSuffix(lower, "middleware") {
+		s = s[:len(s)-len("middleware")]
+	}
+
+	s = strings.TrimSpace(s)
+	s = common.SplitCamelOrPascal(s)
+
+	replacer := strings.NewReplacer("-", " ", "_", " ", ".", " ")
+	s = replacer.Replace(s)
+
+	return strings.Fields(strings.ToLower(s))
+}
+
+func GenerateMiddlewareNamesByType(name string, projectType typeutils.ProjectType) MiddlewareNames {
+	words := normalizeMiddlewareWords(name)
+
+	pascalName := common.ToPascalCase(words)
+	kebabName := common.ToKebabCase(words)
+
+	fileBase := pascalName + ".middleware"
+	if projectType == typeutils.LiteProjectType {
+		fileBase = kebabName + ".middleware"
+	}
+
+	return MiddlewareNames{
+		CleanName:          pascalName,
+		FileName:           fileBase + ".ts",
+		FunctionName:       pascalName + "Middleware",
+		FileNameImportPath: fileBase,
+	}
 }

@@ -1,10 +1,12 @@
 package osutils
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"reflect"
 	"text/template"
 )
@@ -48,15 +50,19 @@ func WriteJSONToFile(file *os.File, data interface{}) error {
 	return nil
 }
 
-func CreateFileFromTmpl(tmplFilePath, filePath string, data interface{}) error {
+func CreateFileFromTmpl(embeddedFS embed.FS, tmplFilePath, filePath string, data interface{}) error {
 	if reflect.TypeOf(data).Kind() != reflect.Pointer {
 		return fmt.Errorf("❌ data must be a pointer to a struct, got %T", data)
 	}
 
-	tmpl, err := template.ParseFiles(tmplFilePath)
+	tmplContent, err := embeddedFS.ReadFile(tmplFilePath)
 	if err != nil {
-		errorMessage := fmt.Errorf("❌ error parsing template: %s", tmplFilePath)
-		return errorMessage
+		return fmt.Errorf("❌ Failed to read embedded template %s: %w", tmplFilePath, err)
+	}
+
+	tmpl, err := template.New(filepath.Base(tmplFilePath)).Parse(string(tmplContent))
+	if err != nil {
+		return fmt.Errorf("❌ error parsing template: %s", tmplFilePath)
 	}
 
 	newFile, err := CreateFile(filePath)

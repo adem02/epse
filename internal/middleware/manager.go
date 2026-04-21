@@ -4,19 +4,27 @@ import (
 	"fmt"
 
 	"github.com/adem02/epse/internal/config"
+	"github.com/adem02/epse/internal/templates"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
+type MiddlewareNames struct {
+	CleanName          string
+	FileName           string
+	FunctionName       string
+	FileNameImportPath string
+}
+
 type MiddlewareManager struct {
-	Name        string
+	Names       MiddlewareNames
 	ProjectType typeutils.ProjectType
 }
 
-func NewMiddlewareManager(name string, projectType typeutils.ProjectType) *MiddlewareManager {
+func NewMiddlewareManager(names MiddlewareNames, projectType typeutils.ProjectType) *MiddlewareManager {
 	return &MiddlewareManager{
-		Name:        name,
+		Names:       names,
 		ProjectType: projectType,
 	}
 }
@@ -27,15 +35,15 @@ func (mm *MiddlewareManager) AddMiddleware() error {
 		return err
 	}
 
-	if MiddlewareAlreadyExists(configData.Middlewares, mm.Name) {
-		return fmt.Errorf("middleware '%s' already exists", mm.Name)
+	if MiddlewareAlreadyExists(configData.Middlewares, mm.Names.CleanName) {
+		return fmt.Errorf("middleware '%s' already exists", mm.Names.CleanName)
 	}
 
 	if err := mm.createMiddlewareFile(); err != nil {
 		return err
 	}
 
-	if err := config.AddNewMiddlewareInConfigFile(mm.Name, configData); err != nil {
+	if err := config.AddNewMiddlewareInConfigFile(mm.Names.CleanName, configData); err != nil {
 		return err
 	}
 
@@ -46,8 +54,8 @@ func (mm *MiddlewareManager) AddMiddleware() error {
 
 func (mm *MiddlewareManager) createMiddlewareFile() error {
 	templatePath := GetMiddlewareTemplateFilePath(mm.ProjectType)
-	dirPath := GetMiddlewareDirectoryPath(mm.ProjectType)
-	fileName := GetMiddlewareFileName(mm.Name)
+	dirPath := GetMiddlewareDirectoryPathByType(mm.ProjectType)
+	fileName := mm.Names.FileName
 
 	if err := osutils.CreateDirectory(dirPath); err != nil {
 		return err
@@ -55,10 +63,10 @@ func (mm *MiddlewareManager) createMiddlewareFile() error {
 
 	filePath := fmt.Sprintf("%s/%s", dirPath, fileName)
 	tmplData := &struct{ MiddlewareName string }{
-		MiddlewareName: mm.Name,
+		MiddlewareName: mm.Names.CleanName,
 	}
 
-	return osutils.CreateFileFromTmpl(templatePath, filePath, tmplData)
+	return osutils.CreateFileFromTmpl(templates.FS, templatePath, filePath, tmplData)
 }
 
 func (mm *MiddlewareManager) displaySuccess() {
@@ -66,22 +74,22 @@ func (mm *MiddlewareManager) displaySuccess() {
 	logutils.Logger{}.Success("✅ Middleware added successfully!")
 	fmt.Println()
 	logutils.Logger{}.Info("📁 Files:")
-	fmt.Printf("  ✓ %s/%s\n", GetMiddlewareDirectoryPath(mm.ProjectType), GetMiddlewareFileName(mm.Name))
+	fmt.Printf("  ✓ %s/%s\n", GetMiddlewareDirectoryPathByType(mm.ProjectType), mm.Names.FileName)
 	fmt.Printf("  ✓ epseconfig.json (updated)\n")
 	fmt.Println()
 	logutils.Logger{}.Info("📋 Usage:")
 
 	if mm.ProjectType == typeutils.LiteProjectType {
-		fmt.Printf("  import { %sMiddleware } from '@/middlewares/%s';\n\n", mm.Name, mm.Name+".middleware")
+		fmt.Printf("  import { %s } from '@/middlewares/%s';\n\n", mm.Names.FunctionName, mm.Names.FileNameImportPath)
 		fmt.Printf("  // On a specific route:\n")
-		fmt.Printf("  router.get('/', %sMiddleware, YourController);\n\n", mm.Name)
+		fmt.Printf("  router.get('/', %s, YourController);\n\n", mm.Names.FunctionName)
 		fmt.Printf("  // On all routes in a file:\n")
-		fmt.Printf("  router.use(%sMiddleware);\n", mm.Name)
+		fmt.Printf("  router.use(%s);\n", mm.Names.FunctionName)
 	} else {
-		fmt.Printf("  import { %sMiddleware } from '@/adapters/middlewares/%s';\n\n", mm.Name, mm.Name+".middleware")
+		fmt.Printf("  import { %s } from '@/adapters/middlewares/%s';\n\n", mm.Names.FunctionName, mm.Names.FileNameImportPath)
 		fmt.Printf("  // On a specific endpoint:\n")
 		fmt.Printf("  @Get('/')\n")
-		fmt.Printf("  @Middlewares(%sMiddleware)\n", mm.Name)
+		fmt.Printf("  @Middlewares(%s)\n", mm.Names.FunctionName)
 		fmt.Printf("  async yourEndpoint(): Promise<void> { ... }\n")
 	}
 

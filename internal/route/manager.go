@@ -2,26 +2,20 @@ package route
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 type RouteManager struct {
-	ControllerName      string
-	CompleteRouteUrl    string
-	Method              string
-	DomainName          string
-	AuthMiddleware      bool
-	AdminAuthMiddleware bool
+	ControllerName   string
+	CompleteRouteUrl string
+	Method           string
+	DomainName       string
 }
 
 type ControllerNames struct {
-	OriginalName       string
 	CleanName          string
 	FileName           string
 	FunctionName       string
@@ -34,16 +28,15 @@ func (rm *RouteManager) AddRoute() error {
 		return err
 	}
 
-	routeStrategy := GetRouteStrategy(typeutils.ProjectType(configData.ProjectType))
-	controllerNames := GenerateControllerNames(rm.ControllerName)
+	projectType := typeutils.ProjectType(configData.ProjectType)
+	routeStrategy := GetRouteStrategy(projectType)
+	controllerNames := GenerateControllerNamesByType(rm.ControllerName, projectType)
 
 	if err := routeStrategy.AddRoute(
 		controllerNames,
 		rm.DomainName,
 		rm.CompleteRouteUrl,
 		rm.Method,
-		rm.AuthMiddleware,
-		rm.AdminAuthMiddleware,
 	); err != nil {
 		return err
 	}
@@ -76,22 +69,6 @@ func NewRouteManager(
 		Method:           method,
 		DomainName:       domainName,
 	}
-}
-
-func cleanControllerName(name string) string {
-	lowerredName := strings.ToLower(strings.TrimSpace(name))
-
-	if strings.HasSuffix(lowerredName, ".controller.ts") {
-		lowerredName = lowerredName[:len(name)-len(".controller.ts")]
-	} else if strings.HasSuffix(name, ".ts") {
-		lowerredName = lowerredName[:len(name)-len(".ts")]
-	}
-
-	lowerredName = strings.TrimSuffix(lowerredName, "controller")
-	name = name[:len(lowerredName)]
-
-	caser := cases.Title(language.Und, cases.NoLower)
-	return caser.String(name)
 }
 
 func (rm *RouteManager) displaySuccess(controllerNames ControllerNames, projectType string) {

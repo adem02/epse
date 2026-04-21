@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/adem02/epse/internal/common"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/osutils"
 )
@@ -36,7 +37,7 @@ func (s *CleanAuthStrategy) AddAuth() error {
 }
 
 func (s *CleanAuthStrategy) updateTsoaJson() error {
-	tsoaJsonPath := GetCleanSrcPath("..", "tsoa.json")
+	tsoaJsonPath := common.GetFileOrDirectoryFromProjectRootPath("tsoa.json")
 	bytes, err := os.ReadFile(tsoaJsonPath)
 	if err != nil {
 		return fmt.Errorf("❌ tsoa.json not found")

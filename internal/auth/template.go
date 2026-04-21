@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/adem02/epse/internal/common"
+	"github.com/adem02/epse/internal/templates"
 	"github.com/adem02/epse/internal/utils/logutils"
 	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
@@ -25,7 +26,7 @@ func CreateAuthFileFromTmpl(projectType typeutils.ProjectType, tmplName, destPat
 	tmplPath := GetAuthTemplatePath(projectType, tmplName)
 	data := &struct{}{}
 
-	return osutils.CreateFileFromTmpl(tmplPath, destPath, data)
+	return osutils.CreateFileFromTmpl(templates.FS, tmplPath, destPath, data)
 }
 
 func CreateAllLiteAuthFiles() error {
@@ -33,15 +34,15 @@ func CreateAllLiteAuthFiles() error {
 		tmpl string
 		dest string
 	}{
-		{"jwt.config.ts.tmpl", GetLiteJwtConfigPath()},
-		{"auth.types.ts.tmpl", GetLiteAuthTypesPath()},
-		{"jwt.service.ts.tmpl", GetLiteJwtServicePath()},
-		{"auth.service.ts.tmpl", GetLiteAuthServicePath()},
-		{"auth.middleware.ts.tmpl", GetLiteAuthMiddlewarePath()},
-		{"login.controller.ts.tmpl", GetLiteLoginControllerPath()},
-		{"register.controller.ts.tmpl", GetLiteRegisterControllerPath()},
-		{"auth.routes.ts.tmpl", GetLiteAuthRoutesPath()},
-		{"express.d.ts.tmpl", GetLiteExpressDtsPath()},
+		{"jwt.config.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("config", "jwt.config.ts")},
+		{"auth.types.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("types", "auth.types.ts")},
+		{"jwt.service.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("services", "jwt.service.ts")},
+		{"auth.service.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("services", "auth.service.ts")},
+		{"auth.middleware.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("middlewares", "auth.middleware.ts")},
+		{"login.controller.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("controllers", "login.controller.ts")},
+		{"register.controller.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("controllers", "auth", "register.controller.ts")},
+		{"auth.routes.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("routes", "auth.routes.ts")},
+		{"express.d.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("types", "express.d.ts")},
 	}
 
 	for _, f := range files {
@@ -58,11 +59,11 @@ func CreateAllCleanAuthFiles() error {
 		tmpl string
 		dest string
 	}{
-		{"jwt.config.ts.tmpl", GetCleanSrcPath("config", "jwt.config.ts")},
-		{"auth.types.ts.tmpl", GetCleanSrcPath("entities", "types", "auth.types.ts")},
-		{"JwtManager.interface.ts.tmpl", GetCleanSrcPath("useCases", "gateway", "JwtManager.interface.ts")},
-		{"JwtManager.ts.tmpl", GetCleanSrcPath("adapters", "gateway", "JwtManager.ts")},
-		{"authentication.ts.tmpl", GetCleanSrcPath("frameworks", "tsoa", "authentication.ts")},
+		{"jwt.config.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("config", "jwt.config.ts")},
+		{"auth.types.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("entities", "types", "auth.types.ts")},
+		{"JwtManager.interface.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("useCases", "gateway", "JwtManager.interface.ts")},
+		{"JwtManager.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("adapters", "gateway", "JwtManager.ts")},
+		{"authentication.ts.tmpl", common.GetFileOrDirectoryPathFromSrcPath("frameworks", "tsoa", "authentication.ts")},
 		{"Login.controller.ts.tmpl", GetCleanAuthControllerPath("login", "Login.controller.ts")},
 		{"Login.dto.ts.tmpl", GetCleanAuthControllerPath("login", "Login.dto.ts")},
 		{"Register.controller.ts.tmpl", GetCleanAuthControllerPath("register", "Register.controller.ts")},
@@ -117,7 +118,7 @@ func UpdateApiErrorTypes() error {
 }
 
 func updateApiErrorCode() error {
-	path := GetCleanSrcPath("entities", "error", "ApiErrorCode.enum.ts")
+	path := common.GetFileOrDirectoryPathFromSrcPath("entities", "error", "ApiErrorCode.enum.ts")
 
 	bytes, err := os.ReadFile(path)
 	if err != nil {
@@ -143,7 +144,7 @@ func updateApiErrorCode() error {
 }
 
 func updateApiErrorKey() error {
-	path := GetCleanSrcPath("entities", "error", "ApiErrorKey.type.ts")
+	path := common.GetFileOrDirectoryPathFromSrcPath("entities", "error", "ApiErrorKey.type.ts")
 
 	bytes, err := os.ReadFile(path)
 	if err != nil {
@@ -174,7 +175,7 @@ func updateApiErrorKey() error {
 }
 
 func UpdateDiConstants() error {
-	path := GetCleanSrcPath("utilities", "di.constants.ts")
+	path := common.GetFileOrDirectoryPathFromSrcPath("utilities", "di.constants.ts")
 
 	bytes, err := os.ReadFile(path)
 	if err != nil {

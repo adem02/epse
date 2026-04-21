@@ -5,7 +5,7 @@ import (
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
-func ConfigFileExists(path string) bool {
+func ConfigFileExists() bool {
 	return osutils.FileOrDirectoryExists(ConfigFilePath)
 }
 

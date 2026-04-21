@@ -8,8 +8,6 @@ type RouteStrategy interface {
 		domainName string,
 		completeRouteUrl string,
 		method string,
-		authMiddleware,
-		validationMiddleware bool,
 	) error
 }
 

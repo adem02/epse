@@ -8,7 +8,6 @@ import (
 	"github.com/adem02/epse/internal/config"
 	"github.com/adem02/epse/internal/middleware"
 	"github.com/adem02/epse/internal/utils/logutils"
-	"github.com/adem02/epse/internal/utils/osutils"
 	"github.com/adem02/epse/internal/utils/typeutils"
 	"github.com/adem02/epse/internal/utils/ui"
 	"github.com/spf13/cobra"
@@ -19,8 +18,7 @@ var MiddlewareCmd = &cobra.Command{
 	Short: "Generate a custom middleware",
 	Long:  `Generate a custom Express middleware file in src/middlewares/`,
 	Run: func(cmd *cobra.Command, args []string) {
-		projectPath := osutils.GetCurrentDirPath()
-		if !config.ConfigFileExists(projectPath) {
+		if !config.ConfigFileExists() {
 			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
 			return
 		}
@@ -112,7 +110,8 @@ func runAddMiddleware(name string) error {
 	}
 
 	projectType := typeutils.ProjectType(configData.ProjectType)
-	middlewareManager := middleware.NewMiddlewareManager(name, projectType)
+	names := middleware.GenerateMiddlewareNamesByType(name, projectType)
+	middlewareManager := middleware.NewMiddlewareManager(names, projectType)
 
 	return middlewareManager.AddMiddleware()
 }

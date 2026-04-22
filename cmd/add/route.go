@@ -26,6 +26,12 @@ var actionMethods = []string{
 	"DELETE",
 }
 
+type crudRoute struct {
+	method         string
+	path           string
+	controllerName string
+}
+
 // routeCmd represents the route command
 var RouteCmd = &cobra.Command{
 	Use:   "route <domaineName> <routeUrl>",
@@ -81,21 +87,8 @@ func handleAddRouteInteractively() {
 	}, &useCrud)
 
 	if useCrud {
-		fmt.Println("\n✅ CRUD Configuration:")
-		fmt.Println("🔹 Domain Name:", domainName)
-		fmt.Println("🔹 Base Path:", routePath)
-		fmt.Println("🔹 Will generate 5 routes")
-
-		var confirm bool
-		survey.AskOne(&survey.Confirm{
-			Message: "Do you want to proceed?",
-			Default: true,
-		}, &confirm)
-
-		if confirm {
+		if confirmCRUDGeneration(domainName, routePath) {
 			generateCRUDRoutes(domainName, routePath)
-		} else {
-			fmt.Println("❌ Operation canceled.")
 		}
 		return
 	}
@@ -156,7 +149,9 @@ func handleAddRouteWithArguments(args []string) {
 	routePath := args[1]
 
 	if crud {
-		generateCRUDRoutes(domainName, routePath)
+		if confirmCRUDGeneration(domainName, routePath) {
+			generateCRUDRoutes(domainName, routePath)
+		}
 		return
 	}
 
@@ -201,20 +196,20 @@ func handleAddRouteWithArguments(args []string) {
 	}
 }
 
-func generateCRUDRoutes(domainName, routeBasePath string) {
+func buildCRUDRoutes(domainName, routeBasePath string) []crudRoute {
 	capitalizedDomain := capitalize(domainName)
 
-	crudRoutes := []struct {
-		method         string
-		path           string
-		controllerName string
-	}{
+	return []crudRoute{
 		{"GET", routeBasePath, "GetAll" + capitalizedDomain + "s"},
 		{"GET", routeBasePath + "/:id", "Get" + capitalizedDomain + "ById"},
 		{"POST", routeBasePath, "Create" + capitalizedDomain},
 		{"PUT", routeBasePath + "/:id", "Update" + capitalizedDomain + "ById"},
 		{"DELETE", routeBasePath + "/:id", "Delete" + capitalizedDomain + "ById"},
 	}
+}
+
+func generateCRUDRoutes(domainName, routeBasePath string) {
+	crudRoutes := buildCRUDRoutes(domainName, routeBasePath)
 
 	fmt.Println()
 	logutils.Logger{}.Info("🔄 Generating CRUD routes...")
@@ -237,6 +232,32 @@ func generateCRUDRoutes(domainName, routeBasePath string) {
 	fmt.Println()
 	logutils.Logger{}.Success("✅ All CRUD routes generated successfully!")
 	fmt.Println()
+}
+
+func confirmCRUDGeneration(domainName, routeBasePath string) bool {
+	crudRoutes := buildCRUDRoutes(domainName, routeBasePath)
+
+	fmt.Println("\n✅ CRUD Configuration Summary:")
+	fmt.Println("🔹 Domain Name:", domainName)
+	fmt.Println("🔹 Base Path:", routeBasePath)
+	fmt.Println("🔹 Generated Routes:")
+
+	for _, r := range crudRoutes {
+		fmt.Printf("   - [%s] %s -> %s\n", r.method, r.path, r.controllerName)
+	}
+
+	var confirm bool
+	survey.AskOne(&survey.Confirm{
+		Message: "Do you want to proceed with this CRUD configuration?",
+		Default: true,
+	}, &confirm)
+
+	if !confirm {
+		fmt.Println("❌ Operation canceled.")
+		return false
+	}
+
+	return true
 }
 
 func capitalize(s string) string {

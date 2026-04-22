@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { {{.RepositoryName}}RepositoryInterface } from '../../useCases/gateway/{{.RepositoryName}}.repository.interface';
+import { {{.RepositoryName}}RepositoryInterface } from '../../useCases/gateway/{{.InterfaceImportPath}}';
 
 @injectable()
 export class {{.RepositoryName}}Repository implements {{.RepositoryName}}RepositoryInterface {

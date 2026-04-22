@@ -8,8 +8,8 @@ func (s *LiteRepositoryStrategy) AddRepository(names RepositoryNames) (bool, err
 	destPath := GetLiteRepositoryFilePath(names.LiteFileName)
 	return CreateRepositoryFileFromTmpl(
 		typeutils.LiteProjectType,
+		names,
 		"repository.ts.tmpl",
-		names.CleanName,
 		destPath,
 	)
 }

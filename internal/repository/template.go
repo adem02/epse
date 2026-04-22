@@ -10,7 +10,7 @@ import (
 	"github.com/adem02/epse/internal/utils/typeutils"
 )
 
-func CreateRepositoryFileFromTmpl(projectType typeutils.ProjectType, templateName, name, destPath string) (bool, error) {
+func CreateRepositoryFileFromTmpl(projectType typeutils.ProjectType, names RepositoryNames, templateName, destPath string) (bool, error) {
 	if osutils.FileOrDirectoryExists(destPath) {
 		logutils.Logger{}.Warning(fmt.Sprintf("⚠️ File already exists, skipping: %s", destPath))
 		return false, nil
@@ -21,8 +21,12 @@ func CreateRepositoryFileFromTmpl(projectType typeutils.ProjectType, templateNam
 	}
 
 	tmplPath := GetRepositoryTemplatePath(projectType, templateName)
-	data := &struct{ RepositoryName string }{
-		RepositoryName: Capitalize(name),
+	data := &struct {
+		RepositoryName      string
+		InterfaceImportPath string
+	}{
+		RepositoryName:      names.CleanName,
+		InterfaceImportPath: names.InterfaceImportPath,
 	}
 
 	return true, osutils.CreateFileFromTmpl(templates.FS, tmplPath, destPath, data)

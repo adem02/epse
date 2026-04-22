@@ -4,7 +4,7 @@ import AppServices from './services';
 
 AppServices.forEach((service) => {
   if (service.class) {
-    container.register(service.token, { useClass: service.class });
+    container.registerSingleton(service.token, service.class);
     return;
   }
   if (service.value) {

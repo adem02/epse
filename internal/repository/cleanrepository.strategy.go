@@ -10,8 +10,8 @@ func (s *CleanRepositoryStrategy) AddRepository(names RepositoryNames) (bool, er
 
 	createdInterface, err := CreateRepositoryFileFromTmpl(
 		typeutils.CleanProjectType,
+		names,
 		"repository.interface.ts.tmpl",
-		names.CleanName,
 		interfacePath,
 	)
 	if err != nil {
@@ -20,8 +20,8 @@ func (s *CleanRepositoryStrategy) AddRepository(names RepositoryNames) (bool, er
 
 	createdRepo, err := CreateRepositoryFileFromTmpl(
 		typeutils.CleanProjectType,
+		names,
 		"repository.ts.tmpl",
-		names.CleanName,
 		repoPath,
 	)
 	if err != nil {

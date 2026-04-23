@@ -29,7 +29,7 @@ Usage:
   epse add service <name>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !config.ConfigFileExists() {
-			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
+			logutils.Logger{}.Error(fmt.Errorf("❌ configuration file not found"))
 			return
 		}
 

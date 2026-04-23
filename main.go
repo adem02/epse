@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	// Appelle la commande racine pour démarrer le CLI
+	// Calls the root command to start the CLI
 	cmd.Execute()
 }

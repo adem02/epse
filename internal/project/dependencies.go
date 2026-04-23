@@ -53,7 +53,7 @@ func getDependencyLts(dependency string, dependencyLst *string) error {
 	res, err := http.Get(dependencyUrl)
 	if err != nil {
 		return err
-		// return nil // En cas de manque connectivité internet
+		// return nil // In case of poor internet connectivity
 	}
 	defer res.Body.Close()
 

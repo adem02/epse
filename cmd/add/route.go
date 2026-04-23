@@ -34,12 +34,12 @@ type crudRoute struct {
 
 // routeCmd represents the route command
 var RouteCmd = &cobra.Command{
-	Use:   "route <domaineName> <routeUrl>",
+	Use:   "route <domainName> <routeUrl>",
 	Short: "Will generate required files for a give route path",
 	Long:  `API route, you must provide details the module name, the path, controller name`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !config.ConfigFileExists() {
-			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
+			logutils.Logger{}.Error(fmt.Errorf("❌ configuration file not found"))
 			return
 		}
 
@@ -55,8 +55,8 @@ var RouteCmd = &cobra.Command{
 func init() {
 	AddCmd.AddCommand(RouteCmd)
 
-	RouteCmd.Flags().StringVar(&actionMethod, "method", "GET", "Méthode HTTP (GET, POST, PUT...)")
-	RouteCmd.Flags().StringVar(&controllerName, "controller", "", "Nom du controller")
+	RouteCmd.Flags().StringVar(&actionMethod, "method", "GET", "HTTP method (GET, POST, PUT...)")
+	RouteCmd.Flags().StringVar(&controllerName, "controller", "", "Controller name")
 	//RouteCmd.MarkFlagRequired("controller")
 	RouteCmd.Flags().BoolVar(&authenticated, "authenticated", false, "Authorized route for authenticated user only")
 	RouteCmd.Flags().BoolVar(&admin, "admin", false, "Authorized route for admin user only")

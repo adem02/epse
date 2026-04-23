@@ -22,7 +22,7 @@ type ConfigData struct {
 var ConfigFilePath = filepath.Join(osutils.GetCurrentDirPath(), "epseconfig.json")
 
 func GenerateNewConfigFile(projectType typeutils.ProjectType, projectName, projectPath string) error {
-	logutils.Logger{}.Info("📝 Création du fichier de configuration...")
+	logutils.Logger{}.Info("📝 Creating configuration file...")
 	if projectType != typeutils.LiteProjectType && projectType != typeutils.CleanProjectType {
 		return fmt.Errorf("unable to create base config file. invalid project type: %s", projectType)
 	}

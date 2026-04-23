@@ -10,7 +10,7 @@ import (
 )
 
 func CreateProjectFilesFromTemplate(basePath string, projectType typeutils.ProjectType, tmplData typeutils.TmplData) error {
-	logutils.Logger{}.Info("📝 Création des fichiers du projet...")
+	logutils.Logger{}.Info("📝 Creating project files...")
 	projectStructure, err := GetTemplatePathsByProjectType(projectType)
 	if err != nil {
 		panic(err)

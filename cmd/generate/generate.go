@@ -17,10 +17,10 @@ var lite, clean bool
 // GenerateCmd represents the generate command
 var GenerateCmd = &cobra.Command{
 	Use:   "generate <project-name> [destination]",
-	Short: "Génère une nouvelle structure de projet",
-	Long: `Génère une nouvelle structure de projet en fonction du nom du projet et de la destination.
-Si la destination n'est pas spécifiée, le projet sera généré dans le répertoire courant.
-Le projet généré sera basé sur un template minimaliste ou plus conséquent en fonction des options.`,
+	Short: "Generate a new project structure",
+	Long: `Generate a new project structure based on the project name and destination.
+If destination is not specified, the project will be generated in the current directory.
+The generated project is based on either a minimal template or a more complete one depending on selected options.`,
 	// Args: cobra.(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
@@ -33,8 +33,8 @@ Le projet généré sera basé sur un template minimaliste ou plus conséquent e
 }
 
 func init() {
-	GenerateCmd.Flags().BoolVar(&lite, "lite", false, "Générer un projet minimaliste (Lite)")
-	GenerateCmd.Flags().BoolVar(&clean, "clean", false, "Générer un projet plus conséquent en avec tsoa (Clean)")
+	GenerateCmd.Flags().BoolVar(&lite, "lite", false, "Generate a minimal project (Lite)")
+	GenerateCmd.Flags().BoolVar(&clean, "clean", false, "Generate a complete project with TSOA (Clean)")
 }
 
 func runInteractive() {
@@ -42,12 +42,12 @@ func runInteractive() {
 	var projectType typeutils.ProjectType
 
 	ui.GetInput(&survey.Input{
-		Message: "Nom du projet :",
+		Message: "Project name:",
 		Default: "api",
 	}, &projectName, survey.Required)
 
 	ui.GetInput(&survey.Select{
-		Message: "Type de structure :",
+		Message: "Project structure type:",
 		Options: []string{
 			"Lite - Node + Express/TypeScript",
 			"Clean - Node + Express/TypeScript + TSOA + Clean Architecture",
@@ -55,7 +55,7 @@ func runInteractive() {
 	}, &projectType, survey.Required)
 
 	ui.GetInput(&survey.Input{
-		Message: "Emplacement du projet (défaut : ./) :",
+		Message: "Project location (default: ./):",
 		Default: "./",
 	}, &destination, survey.Required)
 

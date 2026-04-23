@@ -10,7 +10,7 @@ import (
 
 func GetInput(prompt survey.Prompt, response interface{}, validator survey.Validator) {
 	if err := survey.AskOne(prompt, response, survey.WithValidator(validator)); err != nil {
-		log.Logger{}.Error(fmt.Errorf("\n  interruption détectée. Fermeture...\n"))
+		log.Logger{}.Error(fmt.Errorf("\n  interruption detected. Exiting...\n"))
 		os.Exit(1)
 	}
 }

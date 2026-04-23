@@ -29,13 +29,13 @@ func SeparateRoutePrefixFromUrl(completedRouteUrl string) (prefix string, routeU
 	splittedRouteUrl := strings.Split(trimmedUrl, "/")
 
 	if len(splittedRouteUrl) == 0 {
-		return "", "", fmt.Errorf("❌ URL invalide : %s", completedRouteUrl)
+		return "", "", fmt.Errorf("❌ invalid URL: %s", completedRouteUrl)
 	}
 
 	prefix = splittedRouteUrl[0]
 
 	if strings.HasPrefix(prefix, ":") {
-		return "", "", fmt.Errorf("❌ Un préfixe de route ne peut pas être une variable dynamique : %s", prefix)
+		return "", "", fmt.Errorf("❌ route prefix cannot be a dynamic variable: %s", prefix)
 	}
 
 	routeUrl = strings.Join(splittedRouteUrl[1:], "/")

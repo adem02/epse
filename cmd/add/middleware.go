@@ -19,7 +19,7 @@ var MiddlewareCmd = &cobra.Command{
 	Long:  `Generate a custom Express middleware file in src/middlewares/`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !config.ConfigFileExists() {
-			logutils.Logger{}.Error(fmt.Errorf("❌ fichier de configuration non trouvé"))
+			logutils.Logger{}.Error(fmt.Errorf("❌ configuration file not found"))
 			return
 		}
 

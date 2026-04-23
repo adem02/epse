@@ -18,7 +18,7 @@ type ProjectManager struct {
 func (pm *ProjectManager) Generate() error {
 	projectPath := filepath.Join(pm.Destination, pm.ProjectName)
 	// log project path
-	logutils.Logger{}.Info(fmt.Sprintf("📂 Création du projet %s...", projectPath))
+	logutils.Logger{}.Info(fmt.Sprintf("📂 Creating project %s...", projectPath))
 	if err := CreateProjectStructureByType(projectPath, pm.ProjectType); err != nil {
 		return err
 	}
@@ -56,16 +56,16 @@ func New(projectType typeutils.ProjectType, projectName, projectDestination stri
 }
 
 func displayEndingMessage(projectName, destination string, projectType typeutils.ProjectType) {
-	logutils.Logger{}.Success("✅ Génération réussie !")
+	logutils.Logger{}.Success("✅ Generation completed successfully!")
 
-	logutils.Logger{}.Section("📂 Project généré", projectName)
-	logutils.Logger{}.Section("📍 Emplacement", destination)
-	logutils.Logger{}.Section("🏗️ Type de projet", projectType)
+	logutils.Logger{}.Section("📂 Generated project", projectName)
+	logutils.Logger{}.Section("📍 Location", destination)
+	logutils.Logger{}.Section("🏗️ Project type", projectType)
 	fmt.Println()
 
-	logutils.Logger{}.Warning("🚀 Installez les dépendances")
+	logutils.Logger{}.Warning("🚀 Install dependencies")
 	logutils.Logger{}.Info("   npm install\n")
 
-	logutils.Logger{}.Warning("🚀 Lancez le projet")
+	logutils.Logger{}.Warning("🚀 Run the project")
 	logutils.Logger{}.Info("   npm run dev\n")
 }

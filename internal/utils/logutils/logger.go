@@ -16,7 +16,7 @@ type Logger struct {
 }
 
 func (logger Logger) Success(message string) {
-	fmt.Println(uisuccess(message))
+	fmt.Printf("\n%s\n", uisuccess(message))
 }
 
 func (logger Logger) Warning(message string) {

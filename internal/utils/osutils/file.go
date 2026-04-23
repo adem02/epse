@@ -14,7 +14,7 @@ import (
 func CreateFile(path string) (*os.File, error) {
 	file, err := os.Create(path)
 	if err != nil {
-		errorMessage := fmt.Errorf("❌ erreur lors de la création du fichier: %s", path)
+		errorMessage := fmt.Errorf("❌ error while creating file: %s", path)
 		return nil, errorMessage
 	}
 

@@ -10,7 +10,7 @@ import (
 func GetCurrentDirPath() string {
 	cwd, err := os.Getwd()
 	if err != nil {
-		logutils.Logger{}.Error(fmt.Errorf("❌ impossible de récupérer le chemin du projet"))
+		logutils.Logger{}.Error(fmt.Errorf("❌ unable to resolve project path"))
 		panic(err)
 	}
 	return cwd

@@ -16,16 +16,22 @@ import (
 var RootCmd = &cobra.Command{
 	Use:   "epse",
 	Short: "A brief description of your application",
-	Long: `EPSE : Une CLI pour générer des structures de projets Node.js, Express, Typescript.
+	Long: `EPSE: A CLI to generate Node.js, Express, and TypeScript project structures.
 
 Usage:
   epse [command]
 
 Available Commands:
-  generate    Génère une nouvelle structure de projet
-  help        Affiche l'aide pour les commandes disponibles`,
+  generate    Generate a new project structure
+  help        Display help for available commands`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		fmt.Println()
+	},
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		fmt.Println()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Bienvenue dans EPSE ! Utilisez 'epse help' pour voir les options disponibles.")
+		fmt.Println("Welcome to EPSE! Use 'epse help' to see available options.")
 	},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

@@ -33,7 +33,7 @@ func CreateControllerFileFromTmpl(
 	data interface{},
 ) error {
 	if osutils.FileOrDirectoryExists(controllerFilePath) {
-		logutils.Logger{}.Warning(fmt.Sprintf("⚠️ Le contrôleur existe déjà : %s", controllerFilePath))
+		logutils.Logger{}.Warning(fmt.Sprintf("⚠️ Controller already exists: %s", controllerFilePath))
 		return nil
 	}
 
